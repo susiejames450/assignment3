@@ -1,0 +1,204 @@
+import java.util.Random;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.awt.Color;
+
+/**
+ * A simple predator-prey simulator, based on a rectangular field
+ * containing Wildebeasts and Liones.
+ * 
+ * @author David J. Barnes and Michael Kölling
+ * @version 2016.02.29 (2)
+ */
+public class Simulator
+{
+    // Constants representing configuration information for the simulation.
+    // The default width for the grid.
+    private static final int DEFAULT_WIDTH = 120;
+    // The default depth of the grid.
+    private static final int DEFAULT_DEPTH = 80;
+    // The probability that a Lion will be created in any given grid position.
+    private static final double Lion_CREATION_PROBABILITY = 0.02;
+    // The probability that a Wildebeast will be created in any given grid position.
+    private static final double Wildebeast_CREATION_PROBABILITY = 0.08;  
+    // The probability that a Mouse will be created in any given grid position.
+    private static final double Mouse_CREATION_PROBABILITY = 0.12;
+    // The probability that a Berries will be created in any given grid position.
+    private static final double Berries_CREATION_PROBABILITY = 0.2;
+    
+    
+    
+
+    // List of animals in the field.
+    private List<Animal> animals;
+    //List of plants in the field.
+    private List<Plant> plants;
+    // The current state of the field.
+    private Field field;
+    // The current step of the simulation.
+    private int step;
+    // A graphical view of the simulation.
+    private SimulatorView view;
+    
+    //Colours for animals
+    private Color lightRed = new Color(240,128,128);
+    private Color darkRed = new Color(204-0-0);
+    private Color lightBlue = new Color(51-153-255);
+    private Color darkBlue = new Color(0-0-204);
+    private Color green = new Color (0-153-0);
+    private Color lightYellow = new Color(255-255-153);
+    private Color darkYellow = new Color (255-204-51);
+    private Color black = new Color (0-0-0);
+    private Color darkGrey = new Color (128-128-128);
+    private Color lightBrown = new Color(222,184,135);
+    private Color darkBrown = new Color(139,69,19);
+    private Color blue = new Color(0,0,225);
+    
+    /**
+     * Construct a simulation field with default size.
+     */
+    public Simulator()
+    {
+        this(DEFAULT_DEPTH, DEFAULT_WIDTH);
+    }
+    
+    /**
+     * Create a simulation field with the given size.
+     * @param depth Depth of the field. Must be greater than zero.
+     * @param width Width of the field. Must be greater than zero.
+     */
+    public Simulator(int depth, int width)
+    {
+        if(width <= 0 || depth <= 0) {
+            System.out.println("The dimensions must be greater than zero.");
+            System.out.println("Using default values.");
+            depth = DEFAULT_DEPTH;
+            width = DEFAULT_WIDTH;
+        }
+        
+        animals = new ArrayList<>();
+        plants = new ArrayList<>();
+        field = new Field(depth, width);
+
+        // Create a view of the state of each location in the field.
+        view = new SimulatorView(depth, width);
+        view.setColor(Wildebeast.class, lightYellow);
+        view.setColor(Lion.class, lightRed);
+        view.setColor(Mouse.class, black);
+        view.setColor(Berries.class, blue);
+        
+        
+        // Setup a valid starting point.
+        reset();
+    }
+    
+    /**
+     * Run the simulation from its current state for a reasonably long period,
+     * (4000 steps).
+     */
+    public void runLongSimulation()
+    {
+        simulate(4000);
+    }
+    
+    /**
+     * Run the simulation from its current state for the given number of steps.
+     * Stop before the given number of steps if it ceases to be viable.
+     * @param numSteps The number of steps to run for.
+     */
+    public void simulate(int numSteps)
+    {
+        for(int step = 1; step <= numSteps && view.isViable(field); step++) {
+            simulateOneStep();
+            delay(500);   // uncomment this to run more slowly
+        }
+    }
+    
+    /**
+     * Run the simulation from its current state for a single step.
+     * Iterate over the whole field updating the state of each
+     * Lion and Wildebeast.
+     */
+    public void simulateOneStep()
+    {
+        step++;
+
+        // Provide space for newborn animals.
+        List<Animal> newAnimals = new ArrayList<>();        
+        // Let all Wildebeasts act.
+        for(Iterator<Animal> it = animals.iterator(); it.hasNext(); ) {
+            Animal animal = it.next();
+            animal.act(newAnimals);
+            if(! animal.isAlive()) {
+                it.remove();
+            }
+         }
+               
+        // Add the newly born Liones and Wildebeasts to the main lists.
+        animals.addAll(newAnimals);
+
+        view.showStatus(step, field);
+    }
+        
+    /**
+     * Reset the simulation to a starting position.
+     */
+    public void reset()
+    {
+        step = 0;
+        animals.clear();
+        populate();
+        
+        // Show the starting state in the view.
+        view.showStatus(step, field);
+    }
+    
+    /**
+     * Randomly populate the field with Liones and Wildebeasts.
+     */
+    private void populate()
+    {
+        Random rand = Randomizer.getRandom();
+        field.clear();
+        for(int row = 0; row < field.getDepth(); row++) {
+            for(int col = 0; col < field.getWidth(); col++) {
+                if(rand.nextDouble() <= Lion_CREATION_PROBABILITY) {
+                    Location location = new Location(row, col);
+                    Lion Lion = new Lion(true, field, location);
+                    animals.add(Lion);
+                }
+                else if(rand.nextDouble() <= Wildebeast_CREATION_PROBABILITY) {
+                    Location location = new Location(row, col);
+                    Wildebeast Wildebeast = new Wildebeast(true, field, location);
+                    animals.add(Wildebeast);
+                }
+                else if (rand.nextDouble() <= Mouse_CREATION_PROBABILITY){
+                    Location location = new Location(row, col);
+                    Mouse Mouse = new Mouse(true, field, location);
+                    animals.add(Mouse);
+                }
+                else if (rand.nextDouble() <= Berries_CREATION_PROBABILITY){
+                    Location location = new Location(row, col);
+                    Berries Berries = new Berries(field, location);
+                    plants.add(Berries);
+                }
+                // else leave the location empty.
+            }
+        }
+    }
+    
+    /**
+     * Pause for a given time.
+     * @param millisec  The time to pause for, in milliseconds
+     */
+    private void delay(int millisec)
+    {
+        try {
+            Thread.sleep(millisec);
+        }
+        catch (InterruptedException ie) {
+            // wake up
+        }
+    }
+}
