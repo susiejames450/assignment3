@@ -26,11 +26,7 @@ public class Simulator
     private static final double mouse_CREATION_PROBABILITY = 0.12;
     // the probability that berries will be created 
     private static final double berry_CREATION_PROBABILITY = 0.4;
-    
-    
-    
-    
-    
+
 
     // List of animals in the field.
     private List<Animal> animals;
@@ -43,12 +39,33 @@ public class Simulator
     // A graphical view of the simulation.
     private SimulatorView view;
     
+    //Colours for animals
+    private Color lightRed = new Color(255-51-51);
+    private Color darkRed = new Color(204-0-0);
+    private Color lightBlue = new Color(51-153-255);
+    private Color darkBlue = new Color(0-0-204);
+    private Color green = new Color (0-153-0);
+    private Color lightYellow = new Color(255-255-153);
+    private Color darkYellow = new Color (255-204-51);
+    private Color lightGrey = new Color (224-224-224);
+    private Color darkGrey = new Color (128-128-128);
+    private Color lightBrown = new Color(222,184,135);
+    private Color darkBrown = new Color(139,69,19);
+    private Color pink = new Color(255-0-127);
+    
+    //private ArrayList<Integer> morningTimes;
+    //private ArrayList<Integer> afternoonTimes;
+    
+    private int time;
+    private boolean is12hour;
+    
     /**
      * Construct a simulation field with default size.
      */
     public Simulator()
     {
         this(DEFAULT_DEPTH, DEFAULT_WIDTH);
+       
     }
     
     /**
@@ -71,11 +88,19 @@ public class Simulator
 
         // Create a view of the state of each location in the field.
         view = new SimulatorView(depth, width);
-        view.setColor(Wildebeast.class, Color.ORANGE);
-        view.setColor(Lion.class, Color.BLUE);
-        view.setColor(Mouse.class, Color.GREEN);
-        view.setColor(Berries.class, Color.PINK);
+        view.setColor(Wildebeast.class, lightBlue);
+        view.setColor(Lion.class, darkYellow);
+        view.setColor(Mouse.class, lightBrown);
+        view.setColor(Berries.class, pink);
         
+        //morningTimes = new ArrayList<>();
+        //afternoonTimes = new ArrayList<>();
+        //morningTimes.add(1);
+        //afternoonTimes.add(13);
+        
+        is12hour = true;
+        time = 0;
+    
         // Setup a valid starting point.
         reset();
     }
@@ -98,7 +123,7 @@ public class Simulator
     {
         for(int step = 1; step <= numSteps && view.isViable(field); step++) {
             simulateOneStep();
-            //delay(600);   // uncomment this to run more slowly
+            delay(500);   // uncomment this to run more slowly
         }
     }
     
@@ -110,6 +135,9 @@ public class Simulator
     public void simulateOneStep()
     {
         step++;
+        is12hour = !is12hour;
+        
+        view.updateDayTime();
         Random rand = Randomizer.getRandom();
         // add a method here to spawn berries in different random places 
         for(int row = 0; row < field.getDepth(); row++) {
@@ -123,7 +151,32 @@ public class Simulator
                 }
             }
         }
-                
+        
+        if(is12hour){
+            for(time = 6; time <= 18; time++){
+                view.updateTimeLabel(time);
+                try {
+                    Thread.sleep(300);
+                }
+                catch (InterruptedException ie) {
+                    // wake up
+                }
+            }
+        }
+        else {
+            for(int time = 19; time <= 24; time++){
+                view.updateTimeLabel(time);
+                if (time == 24){
+                    rollover();
+                }
+                try {
+                    Thread.sleep(300);
+                }
+                catch (InterruptedException ie) {
+                    // wake up
+                }
+            }
+        }
 
         // Provide space for newborn animals.
         List<Animal> newAnimals = new ArrayList<>();        
@@ -202,6 +255,22 @@ public class Simulator
         }
         catch (InterruptedException ie) {
             // wake up
+        }
+    }
+    
+    /**
+     * 
+     */
+    private void rollover()
+    {
+        for(time = 0; time <=6; time++){
+            view.updateTimeLabel(time);
+            try {
+                Thread.sleep(300);
+            }
+            catch (InterruptedException ie) {
+                // wake up
+            }
         }
     }
 }
