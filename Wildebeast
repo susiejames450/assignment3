@@ -3,14 +3,14 @@ import java.util.Random;
 
 /**
  * A simple model of a rabbit.
- * Rabbits age, move, breed, and die.
+ * Wildebeasts age, move, breed, and die.
  * 
  * @author David J. Barnes and Michael Kölling
  * @version 2016.02.29 (2)
  */
 public class Wildebeast extends Animal
 {
-    // Characteristics shared by all rabbits (class variables).
+    // Characteristics shared by all Wildebeasts (class variables).
 
     // The age at which a rabbit can start to breed.
     private static final int BREEDING_AGE = 5;
@@ -48,13 +48,13 @@ public class Wildebeast extends Animal
     /**
      * This is what the rabbit does most of the time - it runs 
      * around. Sometimes it will breed or die of old age.
-     * @param newRabbits A list to return newly born rabbits.
+     * @param newWildebeasts A list to return newly born Wildebeasts.
      */
-    public void act(List<Animal> newRabbits)
+    public void act(List<Animal> newWildebeasts)
     {
         incrementAge();
         if(isAlive()) {
-            giveBirth(newRabbits);            
+            giveBirth(newWildebeasts);            
             // Try to move into a free location.
             Location newLocation = getField().freeAdjacentLocation(getLocation());
             if(newLocation != null) {
@@ -82,11 +82,11 @@ public class Wildebeast extends Animal
     /**
      * Check whether or not this rabbit is to give birth at this step.
      * New births will be made into free adjacent locations.
-     * @param newRabbits A list to return newly born rabbits.
+     * @param newWildebeasts A list to return newly born Wildebeasts.
      */
-    private void giveBirth(List<Animal> newRabbits)
+    private void giveBirth(List<Animal> newWildebeasts)
     {
-        // New rabbits are born into adjacent locations.
+        // New Wildebeasts are born into adjacent locations.
         // Get a list of adjacent free locations.
         Field field = getField();
         List<Location> free = field.getFreeAdjacentLocations(getLocation());
@@ -94,7 +94,7 @@ public class Wildebeast extends Animal
         for(int b = 0; b < births && free.size() > 0; b++) {
             Location loc = free.remove(0);
             Wildebeast young = new Wildebeast(false, field, loc);
-            newRabbits.add(young);
+            newWildebeasts.add(young);
         }
     }
         
