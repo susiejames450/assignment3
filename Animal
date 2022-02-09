@@ -20,6 +20,7 @@ public abstract class Animal extends Lifecycle
     private double BREEDING_PROBABILITY;
     
     private int MAX_LITTER_SIZE;
+    
     /**
      * Create a new animal at location in field.
      * 
@@ -30,9 +31,9 @@ public abstract class Animal extends Lifecycle
     {
         super(field, location);
         setGender();
-        //BREEDING_AGE = 5;
-        //BREEDING_PROBABILITY = 0.24;
-        //MAX_LITTER_SIZE = 4;
+        BREEDING_AGE = 5;
+        BREEDING_PROBABILITY = 0.24;
+        MAX_LITTER_SIZE = 4;
     }
     
     /**
@@ -62,28 +63,4 @@ public abstract class Animal extends Lifecycle
     {
         return gender;
     }
-    
-    /**
-     * 
-     */
-    private boolean canBreed()
-    {
-        return age >= BREEDING_AGE;
-    }
-    
-    /**
-     * 
-     */
-    private int breed()
-    {
-        int births = 0;
-        if(canBreed() && rand.nextDouble() <= BREEDING_PROBABILITY)
-        {
-            System.out.println(BREEDING_PROBABILITY);
-            births = rand.nextInt(MAX_LITTER_SIZE) + 1;
-        }
-        return births;
-    }
-    
-
 }
