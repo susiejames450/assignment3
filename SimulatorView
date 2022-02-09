@@ -24,7 +24,10 @@ public class SimulatorView extends JFrame
 
     private final String STEP_PREFIX = "Step: ";
     private final String POPULATION_PREFIX = "Population: ";
+    private final String DATE_PREFIX = "Date:";
+    private final String TIME_PREFIX = "Time:";
     private JLabel stepLabel, population, infoLabel, seasonLabel, dateLabel, timeLabel;
+    private JButton keyLabel;
     private FieldView fieldView;
     
     // A map for storing colors for participants in the simulation
@@ -47,8 +50,9 @@ public class SimulatorView extends JFrame
         infoLabel = new JLabel("  ", JLabel.CENTER);
         population = new JLabel(POPULATION_PREFIX, JLabel.CENTER);  // thing to edit for the population. 
         seasonLabel = new JLabel("Season: ", JLabel.CENTER);
-        dateLabel = new JLabel("Date: ", JLabel.CENTER);
-        timeLabel = new JLabel("Time: ", JLabel.CENTER);
+        dateLabel = new JLabel(DATE_PREFIX , JLabel.CENTER);
+        timeLabel = new JLabel(TIME_PREFIX, JLabel.CENTER);
+        //keyLabel = new JButton("Key", JButton.CENTER);
         
         setLocation(100, 50);
         
@@ -135,9 +139,11 @@ public class SimulatorView extends JFrame
         }
         stats.countFinished();  // just makes the valid true
 
-        population.setText(POPULATION_PREFIX + stats.getPopulationDetails(field));  
+        population.setText(POPULATION_PREFIX + " " + stats.getPopulationDetails(field));  
         // this is going to want to change to update the population
         // stats.getPopulationDetails
+        
+        dateLabel.setText(DATE_PREFIX + " " + stats.getTimeOfDay()); 
         fieldView.repaint();
     }
 
@@ -150,6 +156,29 @@ public class SimulatorView extends JFrame
         return stats.isViable(field);
     }
     
+    /**
+    * 
+    */
+    public void updateDayTime()
+    {
+        stats.reverseDay();
+    }
+        
+    /**
+     * 
+     */
+    public void updateTimeLabel(Integer time)
+    {
+        timeLabel.setText(TIME_PREFIX + " " + time + ":00");
+    }
+    
+    /**
+     * 
+     */
+    public String getTimeOfDay()
+    {
+        return stats.getTimeOfDay();
+    }
     /**
      * Provide a graphical view of a rectangular field. This is 
      * a nested class (a class defined inside a class) which
@@ -235,5 +264,7 @@ public class SimulatorView extends JFrame
                 }
             }
         }
+
     }
+    
 }
