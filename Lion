@@ -119,7 +119,7 @@ public class Lion extends Animal
         while(it.hasNext()) {
             Location where = it.next();
             Object animal = field.getObjectAt(where);
-            if(animal instanceof Lion) {
+            if(animal instanceof Wildebeast) {
                 Wildebeast wildebeast = (Wildebeast) animal;
                 if(wildebeast.isAlive()) { 
                     wildebeast.setDead();
