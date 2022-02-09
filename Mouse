@@ -119,7 +119,7 @@ public class Mouse extends Animal
         while(it.hasNext()) {
             Location where = it.next();
             Object plant = field.getObjectAt(where);
-            if(plant instanceof Mouse) {
+            if(plant instanceof Berries) {
                 Berries Berries = (Berries) plant;
             }
         }
@@ -166,4 +166,5 @@ public class Mouse extends Animal
     {
         return age >= BREEDING_AGE;
     }
+    
 }
