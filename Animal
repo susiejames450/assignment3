@@ -21,6 +21,7 @@ public abstract class Animal extends Lifecycle
     
     private int MAX_LITTER_SIZE;
     
+    private boolean animalSleeping;
     /**
      * Create a new animal at location in field.
      * 
@@ -34,6 +35,7 @@ public abstract class Animal extends Lifecycle
         BREEDING_AGE = 5;
         BREEDING_PROBABILITY = 0.24;
         MAX_LITTER_SIZE = 4;
+        animalSleeping = false;
     }
     
     /**
@@ -62,5 +64,15 @@ public abstract class Animal extends Lifecycle
     protected String getGender()
     {
         return gender;
+    }
+    
+    public boolean isSleeping()
+    {
+        return animalSleeping;
+    }
+    
+    public void changeSleeping()
+    {
+        animalSleeping = !animalSleeping;
     }
 }
