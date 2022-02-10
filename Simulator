@@ -182,11 +182,14 @@ public class Simulator
         List<Animal> newAnimals = new ArrayList<>();        
         // Let all wildebeasts act.
         for(Iterator<Animal> it = animals.iterator(); it.hasNext(); ) {
-            Animal animal = it.next();
-            animal.act(newAnimals);
-            if(! animal.isAlive()) {
-                it.remove();
+            Animal animal = it.next(); 
+            animal.changeSleeping();
+            if(!animal.isSleeping()){
+                animal.act(newAnimals);
+                if(! animal.isAlive()) {
+                    it.remove();
             }
+        }
         }
                
         // Add the newly born liones and wildebeasts to the main lists.
