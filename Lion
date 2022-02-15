@@ -142,12 +142,16 @@ public class Lion extends Animal
         // Get a list of adjacent free locations.
         Field field = getField();
         List<Location> free = field.getFreeAdjacentLocations(getLocation());
-        int births = breed();
-        for(int b = 0; b < births && free.size() > 0; b++) {
-            Location loc = free.remove(0);
-            Lion young = new Lion(false, field, loc);
-            newLiones.add(young);
+        if(getGender().equals("female")){
+            int births = breed();
+            for(int b = 0; b < births && free.size() > 0; b++) {
+                Location loc = free.remove(0);
+                Lion young = new Lion(false, field, loc);
+                newLiones.add(young);
+            }
+            
         }
+ 
     }
         
     /**
@@ -166,10 +170,26 @@ public class Lion extends Animal
 
     /**
      * A Lion can breed if it has reached the breeding age.
+     * And if there is a female lion in an adjacent square
      */
     private boolean canBreed()
     {
-        return age >= BREEDING_AGE;
+        boolean isAnimal = false;
+        
+        
+        List<Location> theAdjacentLocations = field.adjacentLocations(this.location);
+        for(Location location: theAdjacentLocations){
+            Object animal = field.getObjectAt(location);
+            if(animal instanceof Lion){
+                Lion lion = (Lion) animal;
+                if(lion.getGender().equals("female")){
+                    isAnimal = true;
+                }
+            }
+            
+        }
+        return age >= BREEDING_AGE && isAnimal;
     }
+    
+    
 }
- 
