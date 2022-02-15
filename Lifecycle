@@ -1,4 +1,3 @@
-
 /**
  * Write a description of class Lifecycle here.
  *
@@ -7,12 +6,14 @@
  */
 public class Lifecycle
 {
+    // changed these two to protected
+    
     // Whether the animal is alive or not.
-    private boolean alive;
+    protected boolean alive;
     // The animal's field.
-    private Field field;
+    protected Field field;
     // The animal's position in the field.
-    private Location location;
+    protected Location location;
        
     protected int age;
     public Lifecycle(Field field, Location location)
