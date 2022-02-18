@@ -4,14 +4,14 @@ import java.util.Random;
 
 /**
  * A simple model of a Owl.
- * Owles age, move, eat Mouses, and die.
+ * Owls age, move, eat Mouses, and die.
  * 
  * @author David J. Barnes and Michael Kölling
  * @version 2016.02.29 (2)
  */
 public class Owl extends Animal
 {
-    // Characteristics shared by all Owles (class variables).
+    // Characteristics shared by all Owls (class variables).
     
     // The age at which a Owl can start to breed.
     private static final int BREEDING_AGE = 15;
@@ -59,14 +59,14 @@ public class Owl extends Animal
      * Mouses. In the process, it might breed, die of hunger,
      * or die of old age.
      * @param field The field currently occupied.
-     * @param newOwles A list to return newly born Owles.
+     * @param newOwls A list to return newly born Owls.
      */
-    public void act(List<Animal> newOwles)
+    public void act(List<Animal> newOwls)
     {
         incrementAge();
         incrementHunger();
         if(isAlive()) {
-            giveBirth(newOwles);            
+            giveBirth(newOwls);            
             // Move towards a source of food if found.
             Location newLocation = findFood();
             if(newLocation == null) { 
@@ -134,11 +134,11 @@ public class Owl extends Animal
     /**
      * Check whether or not this Owl is to give birth at this step.
      * New births will be made into free adjacent locations.
-     * @param newOwles A list to return newly born Owles.
+     * @param newOwls A list to return newly born Owls.
      */
-    private void giveBirth(List<Animal> newOwles)
+    private void giveBirth(List<Animal> newOwls)
     {
-        // New Owles are born into adjacent locations.
+        // New Owls are born into adjacent locations.
         // Get a list of adjacent free locations.
         Field field = getField();
         List<Location> free = field.getFreeAdjacentLocations(getLocation());
@@ -146,29 +146,27 @@ public class Owl extends Animal
         for(int b = 0; b < births && free.size() > 0; b++) {
             Location loc = free.remove(0);
             Owl young = new Owl(false, field, loc);
-            newOwles.add(young);
+            newOwls.add(young);
         }
     }
-        
+      
     /**
-     * Generate a number representing the number of births,
-     * if it can breed.
-     * @return The number of births (may be zero).
+     * 
      */
-    private int breed()
+    protected boolean canBreed()
+    {
+        return age >= BREEDING_AGE;
+    }
+    
+    /**
+     * 
+     */
+    protected int breed()
     {
         int births = 0;
         if(canBreed() && rand.nextDouble() <= BREEDING_PROBABILITY) {
             births = rand.nextInt(MAX_LITTER_SIZE) + 1;
         }
         return births;
-    }
-
-    /**
-     * A Owl can breed if it has reached the breeding age.
-     */
-    private boolean canBreed()
-    {
-        return age >= BREEDING_AGE;
     }
 }
