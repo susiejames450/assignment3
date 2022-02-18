@@ -7,6 +7,21 @@
  */
 public class Plant extends Lifecycle
 {
-    // instance variables - replace the example below with your own
-   
+    private int MAX_AGE;
+    public Plant(Field field, Location location)
+    {   
+        super(field, location);
+        MAX_AGE = 10;
+    }
+    
+    /**
+     * Increase the age. This could result in the Owl's death.
+     */
+    public void incrementAge()
+    {
+        age++;
+        if(age > MAX_AGE) {
+            setDead();
+        }
+    }
 }
