@@ -21,11 +21,12 @@ public class Simulator
     // The probability that a lion will be created in any given grid position.
     private static final double lion_CREATION_PROBABILITY = 0.02;
     // The probability that a wildebeast will be created in any given grid position.
-    private static final double wildebeast_CREATION_PROBABILITY = 0.08; 
+    private static double wildebeast_CREATION_PROBABILITY = 0.08; 
     // the probability that a mouse will be created 
     private static final double mouse_CREATION_PROBABILITY = 0.12;
     // the probability that berries will be created 
-    private static final double berry_CREATION_PROBABILITY = 0.4;
+    private static final double berry_CREATION_PROBABILITY = 0.05;
+    
 
 
     // List of animals in the field.
@@ -38,6 +39,8 @@ public class Simulator
     private int step;
     // A graphical view of the simulation.
     private SimulatorView view;
+    //Weather system.
+    private Weather weather;
     
     //Colours for animals
     private Color lightPurple= new Color(219,171,255);
@@ -52,9 +55,14 @@ public class Simulator
     private Color lightBrown = new Color(205,133,63);
     private Color darkBrown = new Color(139,69,19);
     private Color pink = new Color(204,0,102);
+    private Color white = new Color(255, 255, 255);
     
     private int time;
     private boolean is12hour;
+    private String currentSeason;
+    private double grassProbability;
+    private double berryProbability;
+    //private static final double wildebeastDeathProbability = 0.1;
     
     /**
      * Construct a simulation field with default size.
@@ -82,16 +90,22 @@ public class Simulator
         animals = new ArrayList<>();
         plants = new ArrayList<>();
         field = new Field(depth, width);
+        weather = new Weather();
 
         // Create a view of the state of each location in the field.
         view = new SimulatorView(depth, width);
         view.setColor(Wildebeast.class, lightBrown);
         view.setColor(Lion.class, darkYellow);
         view.setColor(Mouse.class, darkGrey);
-        view.setColor(Berries.class, lightPurple);
+        view.setColor(Berries.class, pink);
+        view.setColor(Grass.class, green);
         
         is12hour = true;
         time = 0;
+        currentSeason = "Spring " + "    Weather: rain and sun";
+        grassProbability = 0.05;
+        berryProbability = 0.05;
+        
     
         // Setup a valid starting point.
         reset();
@@ -128,17 +142,28 @@ public class Simulator
     {
         step++;
         is12hour = !is12hour;
+        currentSeason = view.getTheSeason();
+        grassProbability = weather.changeGrassProbability(currentSeason);
+        berryProbability = weather.changeBerryProbability(currentSeason);
         
         view.updateDayTime();
         Random rand = Randomizer.getRandom();
         // add a method here to spawn berries in different random places 
         for(int row = 0; row < field.getDepth(); row++) {
             for(int col = 0; col < field.getWidth(); col++) {
-                if(rand.nextDouble() <= berry_CREATION_PROBABILITY) {
+                if(rand.nextDouble() <= berryProbability) {
                     Location location = new Location(row, col);
                     if(field.getObjectAt(row, col) == null){
                         Berries berry = new Berries(field, location);
                         plants.add(berry);
+                    }
+                }
+                
+                else if(rand.nextDouble() <= grassProbability) {
+                    Location location = new Location(row, col);
+                    if(field.getObjectAt(row, col) == null){
+                        Grass grass = new Grass(field, location);
+                        plants.add(grass);
                     }
                 }
             }
@@ -174,16 +199,36 @@ public class Simulator
         List<Animal> newAnimals = new ArrayList<>();        
         // Let all wildebeasts act.
         for(Iterator<Animal> it = animals.iterator(); it.hasNext(); ) {
-            Animal animal = it.next(); 
-            animal.changeSleeping();
+            Animal animal = it.next();   
+            if((animal instanceof Owl || animal instanceof Mouse ) && currentSeason.equals("Winter " + "    Weather: snow and rain")){
+                animal.setIsSleeping();
+            }
+            
+            else{
+                animal.changeSleeping();
+            }
+            
             if(!animal.isSleeping()){
                 animal.act(newAnimals);
                 if(! animal.isAlive()) {
-                    it.remove();
+                it.remove();
+                }
+            } 
+            }
+        
+        for(Iterator<Plant> it = plants.iterator(); it.hasNext(); ) {
+            Plant plant = it.next(); 
+            plant.incrementAge();
+            if(!plant.isAlive()){
+                it.remove();
             }
         }
+        
+        if(step % 5 == 0) {
+            view.updateSeason();
         }
-               
+
+        
         // Add the newly born liones and wildebeasts to the main lists.
         animals.addAll(newAnimals);
 
@@ -234,6 +279,11 @@ public class Simulator
                     Berries berry = new Berries(field, location);
                     plants.add(berry);
                 }
+                else if(rand.nextDouble() <= weather.grassProbability()) {
+                    Location location = new Location(row, col);
+                    Grass grass = new Grass(field, location);
+                    plants.add(grass);
+                }
                 // else leave the location empty.
             }
         }
@@ -267,5 +317,5 @@ public class Simulator
                 // wake up
             }
         }
-    }
+    } 
 }
