@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.ArrayList;
 
 /**
  * This class collects and provides some statistical data on the state 
@@ -16,6 +17,9 @@ public class FieldStats
     // Whether the counters are currently up to date.
     private boolean countsValid;
     private boolean daytime;
+    private ArrayList <String> seasons;
+    private String currentSeason;
+    private int seasonNumber;
     
     /**
      * Construct a FieldStats object.
@@ -26,6 +30,15 @@ public class FieldStats
         // we might find
         counters = new HashMap<>();
         countsValid = true;
+        
+        //Add all seasons to ArrayList
+        seasons = new ArrayList<>();
+        seasons.add("Spring " + "    Weather: rain and sun");
+        seasons.add("Summer " + "    Weather: mostly sunny");
+        seasons.add("Autumn " + "    Weather: lots of rain and wind");
+        seasons.add("Winter " + "    Weather: snow and rain");
+        currentSeason = "Spring" + "    Weather: rain and sun";
+        seasonNumber = 0;
     }
 
     /**
@@ -147,5 +160,25 @@ public class FieldStats
         else{
             return "Night";
         }
+    }
+    
+    /**
+    * 
+    */
+    public void changeSeason()
+    {
+        seasonNumber ++;
+        if(seasonNumber > 3){
+            seasonNumber = 0;
+        }
+        currentSeason = seasons.get(seasonNumber);
+    }
+    
+    /**
+     * 
+     */
+    public String getSeason()
+    {
+        return currentSeason;
     }
 }
