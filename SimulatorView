@@ -26,15 +26,17 @@ public class SimulatorView extends JFrame
     private final String POPULATION_PREFIX = "Population: ";
     private final String DATE_PREFIX = "Date:";
     private final String TIME_PREFIX = "Time:";
-    private JLabel stepLabel, population, infoLabel, seasonLabel, dateLabel, timeLabel;
-    private JButton keyLabel;
+    private final String SEASON_PREFIX = "Season: ";
+    private JLabel stepLabel, population, infoLabel, dateLabel, timeLabel, seasonLabel;
+    private JButton keyButton;
+    private JPanel keyPanel;
     private FieldView fieldView;
     
     // A map for storing colors for participants in the simulation
     private Map<Class, Color> colors;
     // A statistics object computing and storing simulation information
-    private FieldStats stats;    // instance of the FieldStats class - this involves a hashMap which has counters for each entity in the simulation
-
+    private FieldStats stats;
+    // instance of the FieldStats class - this involves a hashMap which has counters for each entity in the simulation
     /**
      * Create a view of the given width and height.
      * @param height The simulation's height.
@@ -52,7 +54,8 @@ public class SimulatorView extends JFrame
         seasonLabel = new JLabel("Season: ", JLabel.CENTER);
         dateLabel = new JLabel(DATE_PREFIX , JLabel.CENTER);
         timeLabel = new JLabel(TIME_PREFIX, JLabel.CENTER);
-        //keyLabel = new JButton("Key", JButton.CENTER);
+        seasonLabel = new JLabel(SEASON_PREFIX, JLabel.CENTER);
+        //keyButton = new JButton("Key", JButton.CENTER);
         
         setLocation(100, 50);
         
@@ -65,6 +68,7 @@ public class SimulatorView extends JFrame
             infoPane.add(stepLabel, BorderLayout.WEST);
             infoPane.add(timeLabel, BorderLayout.EAST);
             infoPane.add(dateLabel, BorderLayout.CENTER);
+            infoPane.add(seasonLabel, BorderLayout.NORTH);
         contents.add(infoPane, BorderLayout.NORTH);
         contents.add(fieldView, BorderLayout.CENTER);
         contents.add(population, BorderLayout.SOUTH);
@@ -143,7 +147,8 @@ public class SimulatorView extends JFrame
         // this is going to want to change to update the population
         // stats.getPopulationDetails
         
-        dateLabel.setText(DATE_PREFIX + " " + stats.getTimeOfDay()); 
+        dateLabel.setText(DATE_PREFIX + " " + stats.getTimeOfDay());
+        seasonLabel.setText(SEASON_PREFIX + stats.getSeason());
         fieldView.repaint();
     }
 
@@ -170,6 +175,22 @@ public class SimulatorView extends JFrame
     public void updateTimeLabel(Integer time)
     {
         timeLabel.setText(TIME_PREFIX + " " + time + ":00");
+    }
+    
+    /**
+     * 
+     */
+    public void updateSeason()
+    {
+        stats.changeSeason();
+    }
+    
+    /**
+     * 
+     */
+    public String getTheSeason()
+    {
+        return stats.getSeason();
     }
     
     /**
