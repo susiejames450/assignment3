@@ -1,0 +1,71 @@
+import java.util.ArrayList;
+
+/**
+ * Write a description of class Season here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+public class Weather {
+    // the probability that grass will grow
+    private static double grass_GROWTH_PROBABILITY;
+    private static double berries_GROWTH_PROBABILITY;
+    
+     /**
+     * Constructor for objects of class Season
+     */
+    public Weather()
+    {
+        grass_GROWTH_PROBABILITY = 0.05;
+        berries_GROWTH_PROBABILITY = 0.05;
+    }
+    
+    /**
+     * 
+     */
+    public double grassProbability()
+    {
+        return grass_GROWTH_PROBABILITY;
+    }
+    
+    /**
+     * Change the probability of grass growth depending on the season.
+     */
+    public double changeGrassProbability(String season)
+    {
+        if(season.equals("Spring " + "    Weather: rain and sun")){
+            grass_GROWTH_PROBABILITY = 0.05;
+        }
+            
+        else if(season.equals("Summer " + "    Weather: mostly sunny")){
+            grass_GROWTH_PROBABILITY = 0.01;
+        }
+            
+        else if(season.equals("Autumn " + "    Weather: lots of rain and wind")){
+            grass_GROWTH_PROBABILITY = 0.02;
+        }
+            
+        else if(season.equals("Winter " + "    Weather: snow and rain")){
+            grass_GROWTH_PROBABILITY = 0.0;
+        }
+            
+        return grass_GROWTH_PROBABILITY;
+    }
+    
+    /**
+     * Change the probabiity of berry growth when it is Summer 
+     * and the berries dry out from the sun.
+     */
+    public double changeBerryProbability(String season)
+    {
+        if(season.equals("Summer " + "    Weather: mostly sunny")) {
+            berries_GROWTH_PROBABILITY = 0.0;
+        }
+        
+        else{
+            berries_GROWTH_PROBABILITY = 0.05;
+        }
+        return berries_GROWTH_PROBABILITY;
+    }
+    
+}
