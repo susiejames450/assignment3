@@ -26,6 +26,8 @@ public class Simulator
     private static final double mouse_CREATION_PROBABILITY = 0.12;
     // the probability that berries will be created 
     private static final double berry_CREATION_PROBABILITY = 0.05;
+    //the probability that an owl will be created
+    private static final double owl_CREATION_PROBABILITY = 0.1;
     
 
 
@@ -41,6 +43,8 @@ public class Simulator
     private SimulatorView view;
     //Weather system.
     private Weather weather;
+    //Implementation of diseases for animals
+    private Disease disease;
     
     //Colours for animals
     private Color lightPurple= new Color(219,171,255);
@@ -91,6 +95,7 @@ public class Simulator
         plants = new ArrayList<>();
         field = new Field(depth, width);
         weather = new Weather();
+        disease = new Disease();
 
         // Create a view of the state of each location in the field.
         view = new SimulatorView(depth, width);
@@ -99,6 +104,7 @@ public class Simulator
         view.setColor(Mouse.class, darkGrey);
         view.setColor(Berries.class, pink);
         view.setColor(Grass.class, green);
+        view.setColor(Owl.class, lightBlue);
         
         is12hour = true;
         time = 0;
@@ -200,6 +206,8 @@ public class Simulator
         // Let all wildebeasts act.
         for(Iterator<Animal> it = animals.iterator(); it.hasNext(); ) {
             Animal animal = it.next();   
+            String chosenDisease = disease.chooseDisease();
+            disease.diseaseProbabilities(animal, chosenDisease);
             if((animal instanceof Owl || animal instanceof Mouse ) && currentSeason.equals("Winter " + "    Weather: snow and rain")){
                 animal.setIsSleeping();
             }
@@ -209,12 +217,15 @@ public class Simulator
             }
             
             if(!animal.isSleeping()){
-                animal.act(newAnimals);
+                animal.act(newAnimals, currentSeason);
                 if(! animal.isAlive()) {
-                it.remove();
+                    it.remove();
+                    continue;
                 }
             } 
-            }
+            recogniseDisease(animal, it, chosenDisease);
+            
+        }
         
         for(Iterator<Plant> it = plants.iterator(); it.hasNext(); ) {
             Plant plant = it.next(); 
@@ -284,6 +295,11 @@ public class Simulator
                     Grass grass = new Grass(field, location);
                     plants.add(grass);
                 }
+                else if (rand.nextDouble() <= owl_CREATION_PROBABILITY) {
+                    Location location = new Location(row, col);
+                    Owl owl = new Owl(true, field, location);
+                    animals.add(owl);
+                }
                 // else leave the location empty.
             }
         }
@@ -318,4 +334,35 @@ public class Simulator
             }
         }
     } 
+    
+    private void recogniseDisease(Animal animal, Iterator it)
+    {
+        if(animal.returnDisease() == null){
+            System.out.println(" !");
+        }
+            
+        else if(animal.returnDisease().equals("bacteria")){
+            animal.setDead();
+            it.remove();
+        }
+            
+        else if(animal.returnDisease().equals("influenza")){
+            is12hour = !is12hour;
+            animal.setDead();
+            it.remove();
+        }
+            
+        else if(animal.returnDisease().equals("covid")){
+            animal.changeSleeping();
+        } 
+    }
+    
+    private void passOnDisease(Animal animal, Iterator it, String chosenDisease)
+    {
+        List<Location> theAdjacentLocations = field.adjacentLocations(animal.getLocation());
+        for(Location location: theAdjacentLocations){
+            Object animal1 = field.getObjectAt(location);
+            animal1.giveDisease(chosenDisease);
+        }
+    }
 }
