@@ -22,6 +22,9 @@ public abstract class Animal extends Lifecycle
     private int MAX_LITTER_SIZE;
     
     private boolean animalSleeping;
+    
+    private String hasDisease;
+    
     /**
      * Create a new animal at location in field.
      * 
@@ -36,15 +39,17 @@ public abstract class Animal extends Lifecycle
         BREEDING_PROBABILITY = 0.24;
         MAX_LITTER_SIZE = 4;
         animalSleeping = false;
+        hasDisease = null;
     }
     
-    /**
+      /**
      * Make this animal act - that is: make it do
      * whatever it wants/needs to do.
      * @param newAnimals A list to receive newly born animals.
-     */
-    abstract public void act(List<Animal> newAnimals);
-
+     *  */
+    
+    abstract public void act(List<Animal> newAnimals, String season);
+    
     /**
      * 
      */
@@ -74,5 +79,20 @@ public abstract class Animal extends Lifecycle
     public void changeSleeping()
     {
         animalSleeping = !animalSleeping;
+    }
+    
+    public void setIsSleeping()
+    {   
+        animalSleeping = true;
+    }
+    
+    public void giveDisease(String disease)
+    {
+        hasDisease = disease;
+    }
+    
+    public String returnDisease()
+    {
+        return hasDisease;
     }
 }
