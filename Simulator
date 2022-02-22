@@ -112,7 +112,6 @@ public class Simulator
         grassProbability = 0.05;
         berryProbability = 0.05;
         
-    
         // Setup a valid starting point.
         reset();
     }
@@ -149,84 +148,13 @@ public class Simulator
         step++;
         is12hour = !is12hour;
         currentSeason = view.getTheSeason();
-        grassProbability = weather.changeGrassProbability(currentSeason);
-        berryProbability = weather.changeBerryProbability(currentSeason);
-        
+       
         view.updateDayTime();
-        Random rand = Randomizer.getRandom();
-        // add a method here to spawn berries in different random places 
-        for(int row = 0; row < field.getDepth(); row++) {
-            for(int col = 0; col < field.getWidth(); col++) {
-                if(rand.nextDouble() <= berryProbability) {
-                    Location location = new Location(row, col);
-                    if(field.getObjectAt(row, col) == null){
-                        Berries berry = new Berries(field, location);
-                        plants.add(berry);
-                    }
-                }
-                
-                else if(rand.nextDouble() <= grassProbability) {
-                    Location location = new Location(row, col);
-                    if(field.getObjectAt(row, col) == null){
-                        Grass grass = new Grass(field, location);
-                        plants.add(grass);
-                    }
-                }
-            }
-        }
-        
-        if(is12hour){
-            for(time = 6; time <= 18; time++){
-                view.updateTimeLabel(time);
-                try {
-                    Thread.sleep(100);
-                }
-                catch (InterruptedException ie) {
-                    // wake up
-                }
-            }
-        }
-        else {
-            for(int time = 19; time <= 24; time++){
-                view.updateTimeLabel(time);
-                if (time == 24){
-                    rollover();
-                }
-                try {
-                    Thread.sleep(100);
-                }
-                catch (InterruptedException ie) {
-                    // wake up
-                }
-            }
-        }
-
+        spawnPlants();
+        showTimer();
+        hibernate();
         // Provide space for newborn animals.
-        List<Animal> newAnimals = new ArrayList<>();        
-        // Let all wildebeasts act.
-        for(Iterator<Animal> it = animals.iterator(); it.hasNext(); ) {
-            Animal animal = it.next();   
-            String chosenDisease = disease.chooseDisease();
-            disease.diseaseProbabilities(animal, chosenDisease);
-            if((animal instanceof Owl || animal instanceof Mouse ) && currentSeason.equals("Winter " + "    Weather: snow and rain")){
-                animal.setIsSleeping();
-            }
-            
-            else{
-                animal.changeSleeping();
-            }
-            
-            if(!animal.isSleeping()){
-                animal.act(newAnimals, currentSeason);
-                if(! animal.isAlive()) {
-                    it.remove();
-                    continue;
-                }
-            } 
-            recogniseDisease(animal, it, chosenDisease);
-            
-        }
-        
+      
         for(Iterator<Plant> it = plants.iterator(); it.hasNext(); ) {
             Plant plant = it.next(); 
             plant.incrementAge();
@@ -239,10 +167,7 @@ public class Simulator
             view.updateSeason();
         }
 
-        
         // Add the newly born liones and wildebeasts to the main lists.
-        animals.addAll(newAnimals);
-
         view.showStatus(step, field);
     }
         
@@ -335,7 +260,7 @@ public class Simulator
         }
     } 
     
-    private void recogniseDisease(Animal animal, Iterator it)
+    private void recogniseDisease(Animal animal, Iterator it, String chosenDisease)
     {
         if(animal.returnDisease() == null){
             System.out.println(" !");
@@ -361,8 +286,112 @@ public class Simulator
     {
         List<Location> theAdjacentLocations = field.adjacentLocations(animal.getLocation());
         for(Location location: theAdjacentLocations){
-            Object animal1 = field.getObjectAt(location);
-            animal1.giveDisease(chosenDisease);
+            Object currentAnimal = field.getObjectAt(location);
+            if(currentAnimal instanceof Mouse) {
+                Mouse mouse = (Mouse) currentAnimal;
+                mouse.giveDisease(chosenDisease);
+            }
+            else if(currentAnimal instanceof Wildebeast) {
+                Wildebeast wildebeast = (Wildebeast) currentAnimal;
+                wildebeast.giveDisease(chosenDisease);
+            }
+            else if(currentAnimal instanceof Lion) {
+                Lion lion = (Lion) currentAnimal;
+                lion.giveDisease(chosenDisease);
+            }
+            else if(currentAnimal instanceof Owl) {
+                Owl owl = (Owl) currentAnimal;
+                owl.giveDisease(chosenDisease);
+            }
+            else if(currentAnimal instanceof Hawk) {
+                Hawk hawk = (Hawk) currentAnimal;
+                hawk.giveDisease(chosenDisease);
+            }
         }
+    }
+    
+    private void showTimer()
+    {
+          if(is12hour){
+            for(time = 6; time <= 18; time++){
+                view.updateTimeLabel(time);
+                try {
+                    Thread.sleep(100);
+                }
+                catch (InterruptedException ie) {
+                    // wake up
+                }
+            }
+        }
+        else {
+            for(int time = 19; time <= 24; time++){
+                view.updateTimeLabel(time);
+                if (time == 24){
+                    rollover();
+                }
+                try {
+                    Thread.sleep(100);
+                }
+                catch (InterruptedException ie) {
+                    // wake up
+                }
+            }
+        }
+    }
+    
+    private void spawnPlants()
+    {
+        grassProbability = weather.changeGrassProbability(currentSeason);
+        berryProbability = weather.changeBerryProbability(currentSeason);
+        Random rand = Randomizer.getRandom();
+        //spawns berries and grass in different random places 
+        for(int row = 0; row < field.getDepth(); row++) {
+            for(int col = 0; col < field.getWidth(); col++) {
+                if(rand.nextDouble() <= berryProbability) {
+                    Location location = new Location(row, col);
+                    if(field.getObjectAt(row, col) == null){
+                        Berries berry = new Berries(field, location);
+                        plants.add(berry);
+                    }
+                }
+                
+                else if(rand.nextDouble() <= grassProbability) {
+                    Location location = new Location(row, col);
+                    if(field.getObjectAt(row, col) == null){
+                        Grass grass = new Grass(field, location);
+                        plants.add(grass);
+                    }
+                }
+            }
+        }
+    }
+    
+    private void hibernate()
+    {
+        List<Animal> newAnimals = new ArrayList<>();        
+        // Let all wildebeasts act.
+        for(Iterator<Animal> it = animals.iterator(); it.hasNext(); ) {
+            Animal animal = it.next();   
+            String chosenDisease = disease.chooseDisease();
+            disease.diseaseProbabilities(animal, chosenDisease);
+            if((animal instanceof Owl || animal instanceof Mouse ) && currentSeason.equals("Winter " + "    Weather: snow and rain")){
+                animal.setIsSleeping();
+            }
+            
+            else{
+                animal.changeSleeping();
+            }
+            
+            if(!animal.isSleeping()){
+                animal.act(newAnimals, currentSeason);
+                if(! animal.isAlive()) {
+                    it.remove();
+                    continue;
+                }
+            } 
+            recogniseDisease(animal, it, chosenDisease);
+            
+        }
+        animals.addAll(newAnimals);
     }
 }
