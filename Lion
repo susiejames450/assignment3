@@ -61,7 +61,7 @@ public class Lion extends Animal
      * @param field The field currently occupied.
      * @param newLiones A list to return newly born Liones.
      */
-    public void act(List<Animal> newLiones)
+    public void act(List<Animal> newLiones, String season)
     {
         incrementAge();
         incrementHunger();
