@@ -64,7 +64,7 @@ public class Wildebeast extends Animal
      * around. Sometimes it will breed or die of old age.
      * @param newWildebeasts A list to return newly born Wildebeasts.
      */
-    public void act(List<Animal> newWildebeasts)
+    public void act(List<Animal> newWildebeasts, String season)
     {
         incrementAge();
         if(isAlive()) {
