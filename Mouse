@@ -61,7 +61,7 @@ public class Mouse extends Animal
      * @param field The field currently occupied.
      * @param newMousees A list to return newly born Mousees.
      */
-    public void act(List<Animal> newMousees)
+    public void act(List<Animal> newMousees, String season)
     {
         incrementAge();
         incrementHunger();
