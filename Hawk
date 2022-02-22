@@ -61,7 +61,7 @@ public class Hawk extends Animal
      * @param field The field currently occupied.
      * @param newHawkes A list to return newly born Hawkes.
      */
-    public void act(List<Animal> newHawkes)
+    public void act(List<Animal> newHawkes, String season)
     {
         incrementAge();
         incrementHunger();
@@ -149,26 +149,24 @@ public class Hawk extends Animal
             newHawkes.add(young);
         }
     }
-        
+      
     /**
-     * Generate a number representing the number of births,
-     * if it can breed.
-     * @return The number of births (may be zero).
+     * 
      */
-    private int breed()
+    protected boolean canBreed()
+    {
+        return age >= BREEDING_AGE;
+    }
+    
+    /**
+     * 
+     */
+    protected int breed()
     {
         int births = 0;
         if(canBreed() && rand.nextDouble() <= BREEDING_PROBABILITY) {
             births = rand.nextInt(MAX_LITTER_SIZE) + 1;
         }
         return births;
-    }
-
-    /**
-     * A Hawk can breed if it has reached the breeding age.
-     */
-    private boolean canBreed()
-    {
-        return age >= BREEDING_AGE;
     }
 }
