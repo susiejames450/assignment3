@@ -26,6 +26,8 @@ public class Owl extends Animal
     private static final int Mouse_FOOD_VALUE = 9;
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
+    // probability of owl sleeping in winter
+    private static final double SLEEPING_PROBABILITY = 0.5;
     
     // Individual characteristics (instance fields).
     // The Owl's age.
@@ -61,25 +63,31 @@ public class Owl extends Animal
      * @param field The field currently occupied.
      * @param newOwls A list to return newly born Owls.
      */
-    public void act(List<Animal> newOwls)
+    public void act(List<Animal> newOwls, String season)
     {
         incrementAge();
         incrementHunger();
         if(isAlive()) {
-            giveBirth(newOwls);            
-            // Move towards a source of food if found.
-            Location newLocation = findFood();
-            if(newLocation == null) { 
-                // No food found - try to move to a free location.
-                newLocation = getField().freeAdjacentLocation(getLocation());
+            //If it's winter, owls don't hunt.
+            if((season.equals("Winter " + "    Weather: snow and rain")) && (rand.nextDouble() <= SLEEPING_PROBABILITY)){
+                setLocation(location);
             }
-            // See if it was possible to move.
-            if(newLocation != null) {
-                setLocation(newLocation);
-            }
-            else {
-                // Overcrowding.
-                setDead();
+            else{
+                giveBirth(newOwls);            
+                // Move towards a source of food if found.
+                Location newLocation = findFood();
+                if(newLocation == null) { 
+                    // No food found - try to move to a free location.
+                    newLocation = getField().freeAdjacentLocation(getLocation());
+                }   
+                // See if it was possible to move.
+                if(newLocation != null) {
+                    setLocation(newLocation);
+                }
+                else {
+                    // Overcrowding.
+                    setDead();
+                }
             }
         }
     }
@@ -119,10 +127,10 @@ public class Owl extends Animal
         while(it.hasNext()) {
             Location where = it.next();
             Object animal = field.getObjectAt(where);
-            if(animal instanceof Owl) {
-                Mouse Mouse = (Mouse) animal;
-                if(Mouse.isAlive()) { 
-                    Mouse.setDead();
+            if(animal instanceof Mouse) {
+                Mouse mouse = (Mouse) animal;
+                if(mouse.isAlive()) { 
+                    mouse.setDead();
                     foodLevel = Mouse_FOOD_VALUE;
                     return where;
                 }
