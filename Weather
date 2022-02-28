@@ -1,27 +1,50 @@
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.Iterator;
 
 /**
- * Write a description of class Season here.
+ * A model that simulates the changing weather types each season
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author Simmi Debnath and Susie James
+ * @version 19.02.2022
  */
 public class Weather {
-    // the probability that grass will grow
+    // the probability that grass will grow at any time
     private static double grass_GROWTH_PROBABILITY;
+    // the probability that berries will grow at any given time
     private static double berries_GROWTH_PROBABILITY;
     
+    
+    private ArrayList <String> weatherTypes;
+    private String currentWeather;
+    private int currentWeatherLength;
+    private int currentStep;
+    
+    
+    
      /**
-     * Constructor for objects of class Season
+     * Sets the grass and berry probabilities to be the same for the start of the simulation
      */
     public Weather()
     {
         grass_GROWTH_PROBABILITY = 0.05;
-        berries_GROWTH_PROBABILITY = 0.05;
+        berries_GROWTH_PROBABILITY = 0.01;
+        
+        weatherTypes = new ArrayList<>();
+        weatherTypes.add("Rain");
+        weatherTypes.add("Sun");
+        weatherTypes.add("Snow");
+        weatherTypes.add("Wind");
+        currentWeather = "Sun";
+        
+        currentStep = 0;
+        currentWeatherLength = 5;
     }
     
     /**
+     * Return the growth probabilty of the grass
      * 
+     * @return the probability of grass growing
      */
     public double grassProbability()
     {
@@ -30,6 +53,9 @@ public class Weather {
     
     /**
      * Change the probability of grass growth depending on the season.
+     * 
+     * @param the current season so the grass growth probability can be changed according to this
+     * @return the new probability for that season
      */
     public double changeGrassProbability(String season)
     {
@@ -55,17 +81,84 @@ public class Weather {
     /**
      * Change the probabiity of berry growth when it is Summer 
      * and the berries dry out from the sun.
+     * 
+     * @param the current season so the berry probability can be changed accordingly
+     * @return the new berry probability for the season
      */
-    public double changeBerryProbability(String season)
+    public double changeBerryProbability(String currentWeather)
     {
-        if(season.equals("Summer " + "    Weather: mostly sunny")) {
+        if(currentWeather.equals("Snow")) {
             berries_GROWTH_PROBABILITY = 0.0;
         }
-        
+        else if(currentWeather.equals("Rain")){
+            berries_GROWTH_PROBABILITY = 0.04;
+        }
         else{
-            berries_GROWTH_PROBABILITY = 0.05;
+            berries_GROWTH_PROBABILITY = 0.02;
         }
         return berries_GROWTH_PROBABILITY;
     }
     
+    public String chooseRandomWeather(){
+        Random rand = Randomizer.getRandom();
+        
+        currentWeatherLength = rand.nextInt(10) + 1;
+        
+        int index = rand.nextInt(weatherTypes.size());
+        currentWeather = weatherTypes.get(index);
+        return currentWeather;
+    }
+    
+    public String getWeatherType(){
+        currentStep++;
+        System.out.println(currentStep);
+        System.out.println(currentWeatherLength);
+        if(currentStep == currentWeatherLength){
+            currentWeather = chooseRandomWeather();
+            currentStep = 0;
+        }
+        
+        return currentWeather;
+    }
+    
+    public int getWeatherLenght(){
+        return currentWeatherLength;
+    }
+    
+    public String getWeather()
+    {
+        return currentWeather;
+    }
+    
+    public void weatherBehaviour(String weather, Animal animal, Iterator it){
+        Random rand = Randomizer.getRandom();
+        if(weather.equals("Snow") && rand.nextDouble() <= 0.05){
+            animal.setDead();
+            //it.remove();
+        }
+        else if(weather.equals("Rain") && rand.nextDouble() <= 0.02){
+            animal.setDead();
+            //it.remove();
+        }
+        else if(weather.equals("Wind")){
+            if(animal instanceof Owl){
+                Owl owl = (Owl) animal;
+                owl.changeBreedingProbability(0.6);
+            }
+            if(animal instanceof Mouse){
+                Mouse mouse = (Mouse) animal;
+                mouse.changeFoodValue(20);
+            }
+        }
+        else if(weather.equals("Sun")){
+            if(animal instanceof Owl){
+                Owl owl = (Owl) animal;
+                owl.changeBreedingProbability(0.5);
+            }
+            if(animal instanceof Mouse){
+                Mouse mouse = (Mouse) animal;
+                mouse.changeFoodValue(50);
+            }
+        }
+    }
 }
