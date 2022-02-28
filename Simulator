@@ -8,29 +8,29 @@ import java.awt.Color;
  * A simple predator-prey simulator, based on a rectangular field
  * containing wildebeasts and liones.
  * 
- * @author David J. Barnes and Michael Kölling
+ * @author David J. Barnes, Michael Kölling, Simmi Debnath and Susie James
  * @version 2016.02.29 (2)
  */
 public class Simulator
 {
     // Constants representing configuration information for the simulation.
     // The default width for the grid.
-    private static final int DEFAULT_WIDTH = 250;
+    private static final int DEFAULT_WIDTH = 120;
     // The default depth of the grid.
-    private static final int DEFAULT_DEPTH = 170;
+    private static final int DEFAULT_DEPTH = 80;
     // The probability that a lion will be created in any given grid position.
-    private static final double lion_CREATION_PROBABILITY = 0.02;
+    private static final double lion_CREATION_PROBABILITY = 0.06;
     // The probability that a wildebeast will be created in any given grid position.
     private static double wildebeast_CREATION_PROBABILITY = 0.08; 
     // the probability that a mouse will be created 
-    private static final double mouse_CREATION_PROBABILITY = 0.12;
+    private static final double mouse_CREATION_PROBABILITY = 0.4;
     // the probability that berries will be created 
-    private static final double berry_CREATION_PROBABILITY = 0.05;
+    private static final double berry_CREATION_PROBABILITY = 0.09;
     //the probability that an owl will be created
-    private static final double owl_CREATION_PROBABILITY = 0.1;
+    private static final double owl_CREATION_PROBABILITY = 0.06;
+    // the probability that a hawk will be created
+    private static final double hawk_CREATION_PROBABILITY = 0.06;
     
-
-
     // List of animals in the field.
     private List<Animal> animals;
     // The current state of the field.
@@ -64,9 +64,12 @@ public class Simulator
     private int time;
     private boolean is12hour;
     private String currentSeason;
+    private String currentWeather;
     private double grassProbability;
     private double berryProbability;
     //private static final double wildebeastDeathProbability = 0.1;
+    
+    private ArrayList<Class> allAnimals;
     
     /**
      * Construct a simulation field with default size.
@@ -74,7 +77,6 @@ public class Simulator
     public Simulator()
     {
         this(DEFAULT_DEPTH, DEFAULT_WIDTH);
-       
     }
     
     /**
@@ -90,9 +92,11 @@ public class Simulator
             depth = DEFAULT_DEPTH;
             width = DEFAULT_WIDTH;
         }
-        
+  
+        // create lists to store all the animals and plants in the simulation
         animals = new ArrayList<>();
         plants = new ArrayList<>();
+        allAnimals = new ArrayList<>();
         field = new Field(depth, width);
         weather = new Weather();
         disease = new Disease();
@@ -105,12 +109,29 @@ public class Simulator
         view.setColor(Berries.class, pink);
         view.setColor(Grass.class, green);
         view.setColor(Owl.class, lightBlue);
+        view.setColor(Hawk.class, lightPurple);
         
         is12hour = true;
         time = 0;
         currentSeason = "Spring " + "    Weather: rain and sun";
         grassProbability = 0.05;
         berryProbability = 0.05;
+        
+        Location location = new Location(2, 2);
+        Lion lion = new Lion(true, field, location);
+        Mouse mouse = new Mouse(true, field, location);
+        Owl owl = new Owl(true, field, location);
+        Wildebeast wildebeast = new Wildebeast(true, field, location);
+        Hawk hawk = new Hawk(true, field, location);
+        
+        
+        allAnimals.add(Lion.class);
+        allAnimals.add(Mouse.class);
+        allAnimals.add(Owl.class);
+        allAnimals.add(Wildebeast.class);
+        allAnimals.add(Hawk.class);
+        
+        
         
         // Setup a valid starting point.
         reset();
@@ -134,7 +155,7 @@ public class Simulator
     {
         for(int step = 1; step <= numSteps && view.isViable(field); step++) {
             simulateOneStep();
-            delay(100);   // uncomment this to run more slowly
+            //delay(500);   // uncomment this to run more slowly
         }
     }
     
@@ -148,13 +169,15 @@ public class Simulator
         step++;
         is12hour = !is12hour;
         currentSeason = view.getTheSeason();
+        currentWeather = view.getWeather();
+        // method here that handles the weather 
        
         view.updateDayTime();
         spawnPlants();
         showTimer();
         hibernate();
-        // Provide space for newborn animals.
       
+        // increases the age of all the plants after each step
         for(Iterator<Plant> it = plants.iterator(); it.hasNext(); ) {
             Plant plant = it.next(); 
             plant.incrementAge();
@@ -163,11 +186,12 @@ public class Simulator
             }
         }
         
+        // changes the season every five steps
         if(step % 5 == 0) {
             view.updateSeason();
         }
 
-        // Add the newly born liones and wildebeasts to the main lists.
+        // Add the newly born animals to the main lists.
         view.showStatus(step, field);
     }
         
@@ -190,7 +214,9 @@ public class Simulator
     private void populate()
     {
         Random rand = Randomizer.getRandom();
-        field.clear();
+        field.clear();      
+        
+        
         for(int row = 0; row < field.getDepth(); row++) {
             for(int col = 0; col < field.getWidth(); col++) {
                 if(rand.nextDouble() <= lion_CREATION_PROBABILITY) {
@@ -198,33 +224,39 @@ public class Simulator
                     Lion lion = new Lion(true, field, location);
                     animals.add(lion);
                 }
-                else if(rand.nextDouble() <= wildebeast_CREATION_PROBABILITY) {
+                /*else if(rand.nextDouble() <= wildebeast_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     Wildebeast wildebeast = new Wildebeast(true, field, location);
                     animals.add(wildebeast);
-                }
+                }*/
                 
                 else if(rand.nextDouble() <= mouse_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     Mouse mouse = new Mouse(true, field, location);
                     animals.add(mouse);
                 }
-                // here to add the probabilities for the other animals
                 else if(rand.nextDouble() <= berry_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     Berries berry = new Berries(field, location);
                     plants.add(berry);
                 }
-                else if(rand.nextDouble() <= weather.grassProbability()) {
+                /*else if(rand.nextDouble() <= weather.grassProbability()) {
                     Location location = new Location(row, col);
                     Grass grass = new Grass(field, location);
                     plants.add(grass);
-                }
+                }*/
                 else if (rand.nextDouble() <= owl_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     Owl owl = new Owl(true, field, location);
                     animals.add(owl);
                 }
+                else if(rand.nextDouble() <= hawk_CREATION_PROBABILITY) {
+                    Location location = new Location(row, col);
+                    Hawk hawk = new Hawk(true, field, location);
+                    animals.add(hawk);
+                }
+                
+                
                 // else leave the location empty.
             }
         }
@@ -246,13 +278,14 @@ public class Simulator
     
     /**
      * 
+     * 
      */
     private void rollover()
     {
         for(time = 0; time <=6; time++){
             view.updateTimeLabel(time);
             try {
-                Thread.sleep(100);
+                Thread.sleep(20);
             }
             catch (InterruptedException ie) {
                 // wake up
@@ -260,10 +293,15 @@ public class Simulator
         }
     } 
     
+    
+    /**
+     * Changes the animals behaviour when they have a disease
+     * 
+     */
     private void recogniseDisease(Animal animal, Iterator it, String chosenDisease)
     {
         if(animal.returnDisease() == null){
-            System.out.println(" !");
+            return;
         }
             
         else if(animal.returnDisease().equals("bacteria")){
@@ -272,41 +310,25 @@ public class Simulator
         }
             
         else if(animal.returnDisease().equals("influenza")){
-            is12hour = !is12hour;
             animal.setDead();
             it.remove();
         }
             
         else if(animal.returnDisease().equals("covid")){
-            animal.changeSleeping();
+            animal.changeBreedingProbability(0.0);
         } 
     }
     
-    private void passOnDisease(Animal animal, Iterator it, String chosenDisease)
-    {
+    private void passOnDisease(Animal animal, Iterator it, String chosenDisease) {
         List<Location> theAdjacentLocations = field.adjacentLocations(animal.getLocation());
         for(Location location: theAdjacentLocations){
             Object currentAnimal = field.getObjectAt(location);
-            if(currentAnimal instanceof Mouse) {
-                Mouse mouse = (Mouse) currentAnimal;
-                mouse.giveDisease(chosenDisease);
+            if(currentAnimal != null){
+                Lifecycle animal1 = (Lifecycle) currentAnimal;
+                System.out.println(chosenDisease);
+                animal1.giveTheDisease(chosenDisease);
             }
-            else if(currentAnimal instanceof Wildebeast) {
-                Wildebeast wildebeast = (Wildebeast) currentAnimal;
-                wildebeast.giveDisease(chosenDisease);
-            }
-            else if(currentAnimal instanceof Lion) {
-                Lion lion = (Lion) currentAnimal;
-                lion.giveDisease(chosenDisease);
-            }
-            else if(currentAnimal instanceof Owl) {
-                Owl owl = (Owl) currentAnimal;
-                owl.giveDisease(chosenDisease);
-            }
-            else if(currentAnimal instanceof Hawk) {
-                Hawk hawk = (Hawk) currentAnimal;
-                hawk.giveDisease(chosenDisease);
-            }
+        
         }
     }
     
@@ -316,7 +338,7 @@ public class Simulator
             for(time = 6; time <= 18; time++){
                 view.updateTimeLabel(time);
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(20);
                 }
                 catch (InterruptedException ie) {
                     // wake up
@@ -330,7 +352,7 @@ public class Simulator
                     rollover();
                 }
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(20);
                 }
                 catch (InterruptedException ie) {
                     // wake up
@@ -355,13 +377,13 @@ public class Simulator
                     }
                 }
                 
-                else if(rand.nextDouble() <= grassProbability) {
+                /*else if(rand.nextDouble() <= grassProbability) {
                     Location location = new Location(row, col);
                     if(field.getObjectAt(row, col) == null){
                         Grass grass = new Grass(field, location);
                         plants.add(grass);
                     }
-                }
+                }*/
             }
         }
     }
@@ -374,7 +396,10 @@ public class Simulator
             Animal animal = it.next();   
             String chosenDisease = disease.chooseDisease();
             disease.diseaseProbabilities(animal, chosenDisease);
-            if((animal instanceof Owl || animal instanceof Mouse ) && currentSeason.equals("Winter " + "    Weather: snow and rain")){
+            weather.weatherBehaviour(currentWeather, animal, it);
+            if((animal instanceof Owl || animal instanceof Lion || animal instanceof Hawk) && (currentSeason.equals("Winter") 
+            || (currentSeason.equals("Autumn"))))
+            {
                 animal.setIsSleeping();
             }
             
@@ -390,6 +415,8 @@ public class Simulator
                 }
             } 
             recogniseDisease(animal, it, chosenDisease);
+            System.out.println(chosenDisease);
+            passOnDisease(animal, it, chosenDisease);
             
         }
         animals.addAll(newAnimals);
