@@ -59,19 +59,19 @@ public class Weather {
      */
     public double changeGrassProbability(String season)
     {
-        if(season.equals("Spring " + "    Weather: rain and sun")){
+        if(season.equals("Spring ")){
             grass_GROWTH_PROBABILITY = 0.05;
         }
             
-        else if(season.equals("Summer " + "    Weather: mostly sunny")){
+        else if(season.equals("Summer ")){
             grass_GROWTH_PROBABILITY = 0.01;
         }
             
-        else if(season.equals("Autumn " + "    Weather: lots of rain and wind")){
+        else if(season.equals("Autumn ")){
             grass_GROWTH_PROBABILITY = 0.02;
         }
             
-        else if(season.equals("Winter " + "    Weather: snow and rain")){
+        else if(season.equals("Winter ")){
             grass_GROWTH_PROBABILITY = 0.0;
         }
             
@@ -134,11 +134,9 @@ public class Weather {
         Random rand = Randomizer.getRandom();
         if(weather.equals("Snow") && rand.nextDouble() <= 0.05){
             animal.setDead();
-            //it.remove();
         }
         else if(weather.equals("Rain") && rand.nextDouble() <= 0.02){
             animal.setDead();
-            //it.remove();
         }
         else if(weather.equals("Wind")){
             if(animal instanceof Owl){
