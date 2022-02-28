@@ -33,11 +33,11 @@ public class FieldStats
         
         //Add all seasons to ArrayList
         seasons = new ArrayList<>();
-        seasons.add("Spring " + "    Weather: rain and sun");
-        seasons.add("Summer " + "    Weather: mostly sunny");
-        seasons.add("Autumn " + "    Weather: lots of rain and wind");
-        seasons.add("Winter " + "    Weather: snow and rain");
-        currentSeason = "Spring" + "    Weather: rain and sun";
+        seasons.add("Spring ");
+        seasons.add("Summer ");
+        seasons.add("Autumn ");
+        seasons.add("Winter ");
+        currentSeason = "Spring";
         seasonNumber = 0;
     }
 
