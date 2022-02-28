@@ -1,9 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.border.*;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 /**
  * A graphical view of the simulation grid.
  * The view displays a colored rectangle for each location 
@@ -27,9 +28,12 @@ public class SimulatorView extends JFrame
     private final String DATE_PREFIX = "Date:";
     private final String TIME_PREFIX = "Time:";
     private final String SEASON_PREFIX = "Season: ";
-    private JLabel stepLabel, population, infoLabel, dateLabel, timeLabel, seasonLabel;
+    private final String WEATHER_PREFIX = "Weather: ";
+    private JLabel stepLabel, population, infoLabel, dateLabel, timeLabel, seasonLabel, weatherLabel;
     private JButton keyButton;
     private JPanel keyPanel;
+    private JFrame keyFrame;
+    private JTextField keyLabel;
     private FieldView fieldView;
     
     // A map for storing colors for participants in the simulation
@@ -37,6 +41,8 @@ public class SimulatorView extends JFrame
     // A statistics object computing and storing simulation information
     private FieldStats stats;
     // instance of the FieldStats class - this involves a hashMap which has counters for each entity in the simulation
+    
+    private Weather weather;
     /**
      * Create a view of the given width and height.
      * @param height The simulation's height.
@@ -46,6 +52,7 @@ public class SimulatorView extends JFrame
     {
         stats = new FieldStats();
         colors = new LinkedHashMap<>();
+        weather = new Weather();
 
         setTitle("Fox and Rabbit Simulation");
         stepLabel = new JLabel(STEP_PREFIX, JLabel.CENTER);
@@ -55,7 +62,8 @@ public class SimulatorView extends JFrame
         dateLabel = new JLabel(DATE_PREFIX , JLabel.CENTER);
         timeLabel = new JLabel(TIME_PREFIX, JLabel.CENTER);
         seasonLabel = new JLabel(SEASON_PREFIX, JLabel.CENTER);
-        //keyButton = new JButton("Key", JButton.CENTER);
+        weatherLabel = new JLabel(WEATHER_PREFIX, JLabel.CENTER);
+        keyButton = new JButton("Key");
         
         setLocation(100, 50);
         
@@ -65,15 +73,22 @@ public class SimulatorView extends JFrame
         
         JPanel infoPane = new JPanel(new BorderLayout());
         JPanel infoPane2 = new JPanel(new BorderLayout());
-            infoPane.add(stepLabel, BorderLayout.WEST);
-            infoPane.add(timeLabel, BorderLayout.EAST);
-            infoPane.add(dateLabel, BorderLayout.CENTER);
-            infoPane.add(seasonLabel, BorderLayout.NORTH);
+        infoPane.add(stepLabel, BorderLayout.WEST);
+        infoPane.add(timeLabel, BorderLayout.EAST);
+        infoPane.add(dateLabel, BorderLayout.CENTER);
+        infoPane.add(seasonLabel, BorderLayout.NORTH);
+        infoPane.add(weatherLabel, BorderLayout.SOUTH);
+        
+        contents.add(keyButton, BorderLayout.WEST);
         contents.add(infoPane, BorderLayout.NORTH);
         contents.add(fieldView, BorderLayout.CENTER);
         contents.add(population, BorderLayout.SOUTH);
+        
         pack();
         setVisible(true);
+        keyButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {keyButtonClicked(); }
+            });
     }
     
     /**
@@ -144,11 +159,10 @@ public class SimulatorView extends JFrame
         stats.countFinished();  // just makes the valid true
 
         population.setText(POPULATION_PREFIX + " " + stats.getPopulationDetails(field));  
-        // this is going to want to change to update the population
-        // stats.getPopulationDetails
         
         dateLabel.setText(DATE_PREFIX + " " + stats.getTimeOfDay());
         seasonLabel.setText(SEASON_PREFIX + stats.getSeason());
+        weatherLabel.setText(WEATHER_PREFIX + " " + weather.getWeatherType());
         fieldView.repaint();
     }
 
@@ -162,7 +176,7 @@ public class SimulatorView extends JFrame
     }
     
     /**
-    * 
+    * Changes state from day to night and vice versa.
     */
     public void updateDayTime()
     {
@@ -170,7 +184,8 @@ public class SimulatorView extends JFrame
     }
         
     /**
-     * 
+     * Updates the time label seen in the simulator.
+     * @param time The constantly changing time.
      */
     public void updateTimeLabel(Integer time)
     {
@@ -178,7 +193,7 @@ public class SimulatorView extends JFrame
     }
     
     /**
-     * 
+     * Changes the season every 5 steps.
      */
     public void updateSeason()
     {
@@ -186,7 +201,8 @@ public class SimulatorView extends JFrame
     }
     
     /**
-     * 
+     * Returns the current season shown in simulator.
+     * @return the name of the current season.
      */
     public String getTheSeason()
     {
@@ -194,12 +210,52 @@ public class SimulatorView extends JFrame
     }
     
     /**
-     * 
+     * Returns the current time in the day as shown in the simulator.
+     * @return the current time.
      */
     public String getTimeOfDay()
     {
         return stats.getTimeOfDay();
     }
+    
+    /**
+     * Gets the weather from the Weather class.
+     * @return Returns the weather.
+     */
+    public String getWeather()
+    {
+        return weather.getWeather();
+    }
+    
+    /**
+     * 
+     */
+    public void keyButtonClicked()
+    {
+        System.out.println("Key button pressed");
+        keyFrame = new JFrame("Key");
+        keyPanel = new JPanel( new GridLayout(8, 1));
+        
+        keyFrame.setLocation(1200,500);
+        keyFrame.setSize(500, 300);
+        keyFrame.add(keyPanel);
+        
+        JLabel titleLabel = new JLabel("ANIMAL COLOUR KEY: ");
+        Font font = new Font("Courier", Font.BOLD,12);
+        titleLabel.setFont(font);
+        
+        keyPanel.add(titleLabel); 
+        keyPanel.add(new JLabel("Grass = green"));
+        keyPanel.add(new JLabel("Berries = pink"));
+        keyPanel.add(new JLabel("Mice = grey"));
+        keyPanel.add(new JLabel("Owls = blue"));
+        keyPanel.add(new JLabel("Hawks = purple"));
+        keyPanel.add(new JLabel("Wildebeasts = brown"));
+        keyPanel.add(new JLabel("Lions = yellow"));
+         
+        keyFrame.setVisible(true); 
+    }
+
     /**
      * Provide a graphical view of a rectangular field. This is 
      * a nested class (a class defined inside a class) which
@@ -286,6 +342,27 @@ public class SimulatorView extends JFrame
             }
         }
 
+    }
+    
+      private class Key extends JPanel
+    {
+        private final int GRID_VIEW_SCALING_FACTOR = 6;
+
+        private int gridWidth, gridHeight;
+        private int xScale, yScale;
+        Dimension size;
+        private Graphics g;
+        private Image fieldImage;
+
+        /**
+         * Create a new Key frame component.
+         */
+        public Key(int height, int width)
+        {
+            gridHeight = height;
+            gridWidth = width;
+            size = new Dimension(0, 0);
+        }
     }
     
 }
