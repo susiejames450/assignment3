@@ -1,42 +1,37 @@
 import java.util.Random;
-import java.util.Set;
-import java.util.Arrays;
-
 /**
  * Write a description of class Disease here.
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author (Simran Debnath and Susetta James)
+ * @version (18/02/2022)
  */
 public class Disease
 {
-    // instance variables - replace the example below with your own
     private String[] diseases;
-    
-
-    /**
-     * Constructor for objects of class Disease
-     */
     public Disease()
     {
         diseases = new String[3];
         Random generator = new Random();
+        //Add the diseases to the Array.
         diseases[0] = "bacteria";
         diseases[1] = "influenza";
         diseases[2] = "covid";
     }
 
     /**
-     * 
+     * Randomly picks which disease the animal will have.
      */
-    public String chooseDisease(){
+    public String chooseDisease()
+    {
         Random rand = new Random();
         int disease = rand.nextInt(diseases.length);
         return diseases[disease];
     }
     
     /**
-     * 
+     * Defines the probabilities of an animal getting each disease.
+     * @param animal The animal which has the disease
+     * @param thisDisease The disease which is allocated to the animal.
      */
     public void diseaseProbabilities(Animal animal, String thisDisease)
     {
@@ -45,7 +40,7 @@ public class Disease
             animal.giveDisease(thisDisease);
         }
         
-        if(thisDisease.equals("influenza") && (rand.nextDouble() <= 0.9)) {
+        if(thisDisease.equals("influenza") && (rand.nextDouble() <= 0.002)) {
             animal.giveDisease(thisDisease);
         }
         
