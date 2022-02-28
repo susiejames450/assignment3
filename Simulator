@@ -19,9 +19,9 @@ public class Simulator
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 80;
     // The probability that a lion will be created in any given grid position.
-    private static final double lion_CREATION_PROBABILITY = 0.06;
+    private static final double lion_CREATION_PROBABILITY = 0.08;
     // The probability that a wildebeast will be created in any given grid position.
-    private static double wildebeast_CREATION_PROBABILITY = 0.08; 
+    private static double wildebeast_CREATION_PROBABILITY = 0.06; 
     // the probability that a mouse will be created 
     private static final double mouse_CREATION_PROBABILITY = 0.4;
     // the probability that berries will be created 
@@ -125,14 +125,6 @@ public class Simulator
         Hawk hawk = new Hawk(true, field, location);
         
         
-        allAnimals.add(Lion.class);
-        allAnimals.add(Mouse.class);
-        allAnimals.add(Owl.class);
-        allAnimals.add(Wildebeast.class);
-        allAnimals.add(Hawk.class);
-        
-        
-        
         // Setup a valid starting point.
         reset();
     }
@@ -143,7 +135,7 @@ public class Simulator
      */
     public void runLongSimulation()
     {
-        simulate(4000);
+        simulate(100);
     }
     
     /**
@@ -214,8 +206,7 @@ public class Simulator
     private void populate()
     {
         Random rand = Randomizer.getRandom();
-        field.clear();      
-        
+        field.clear();       
         
         for(int row = 0; row < field.getDepth(); row++) {
             for(int col = 0; col < field.getWidth(); col++) {
@@ -224,11 +215,11 @@ public class Simulator
                     Lion lion = new Lion(true, field, location);
                     animals.add(lion);
                 }
-                /*else if(rand.nextDouble() <= wildebeast_CREATION_PROBABILITY) {
+                else if(rand.nextDouble() <= wildebeast_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     Wildebeast wildebeast = new Wildebeast(true, field, location);
                     animals.add(wildebeast);
-                }*/
+                }
                 
                 else if(rand.nextDouble() <= mouse_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
@@ -240,11 +231,11 @@ public class Simulator
                     Berries berry = new Berries(field, location);
                     plants.add(berry);
                 }
-                /*else if(rand.nextDouble() <= weather.grassProbability()) {
+                else if(rand.nextDouble() <= weather.grassProbability()) {
                     Location location = new Location(row, col);
                     Grass grass = new Grass(field, location);
                     plants.add(grass);
-                }*/
+                }
                 else if (rand.nextDouble() <= owl_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
                     Owl owl = new Owl(true, field, location);
@@ -255,8 +246,6 @@ public class Simulator
                     Hawk hawk = new Hawk(true, field, location);
                     animals.add(hawk);
                 }
-                
-                
                 // else leave the location empty.
             }
         }
@@ -325,7 +314,6 @@ public class Simulator
             Object currentAnimal = field.getObjectAt(location);
             if(currentAnimal != null){
                 Lifecycle animal1 = (Lifecycle) currentAnimal;
-                System.out.println(chosenDisease);
                 animal1.giveTheDisease(chosenDisease);
             }
         
@@ -377,13 +365,13 @@ public class Simulator
                     }
                 }
                 
-                /*else if(rand.nextDouble() <= grassProbability) {
+                else if(rand.nextDouble() <= grassProbability) {
                     Location location = new Location(row, col);
                     if(field.getObjectAt(row, col) == null){
                         Grass grass = new Grass(field, location);
                         plants.add(grass);
                     }
-                }*/
+                }
             }
         }
     }
@@ -397,15 +385,24 @@ public class Simulator
             String chosenDisease = disease.chooseDisease();
             disease.diseaseProbabilities(animal, chosenDisease);
             weather.weatherBehaviour(currentWeather, animal, it);
-            if((animal instanceof Owl || animal instanceof Lion || animal instanceof Hawk) && (currentSeason.equals("Winter") 
-            || (currentSeason.equals("Autumn"))))
+            if((animal instanceof Owl) && (currentSeason.equals("Winter")))
+            {
+                animal.setIsSleeping();
+            }
+            
+            else if((animal instanceof Hawk) && (currentSeason.equals("Autumn")))
+            {
+                animal.setIsSleeping();
+            }
+            
+            else if((animal instanceof Wildebeast) && (currentSeason.equals("Summer")))
             {
                 animal.setIsSleeping();
             }
             
             else{
                 animal.changeSleeping();
-            }
+            } 
             
             if(!animal.isSleeping()){
                 animal.act(newAnimals, currentSeason);
@@ -415,9 +412,7 @@ public class Simulator
                 }
             } 
             recogniseDisease(animal, it, chosenDisease);
-            System.out.println(chosenDisease);
-            passOnDisease(animal, it, chosenDisease);
-            
+            passOnDisease(animal, it, chosenDisease); 
         }
         animals.addAll(newAnimals);
     }
