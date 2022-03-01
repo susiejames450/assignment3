@@ -6,7 +6,7 @@ import java.awt.Color;
 
 /**
  * A simple predator-prey simulator, based on a rectangular field
- * containing wildebeasts and liones.
+ * containing Wildebeests and liones.
  * 
  * @author David J. Barnes, Michael Kölling, Simmi Debnath and Susie James
  * @version 2016.02.29 (2)
@@ -15,13 +15,13 @@ public class Simulator
 {
     // Constants representing configuration information for the simulation.
     // The default width for the grid.
-    private static final int DEFAULT_WIDTH = 120;
+    private static final int DEFAULT_WIDTH = 300;
     // The default depth of the grid.
-    private static final int DEFAULT_DEPTH = 80;
+    private static final int DEFAULT_DEPTH = 200;
     // The probability that a lion will be created in any given grid position.
     private static final double lion_CREATION_PROBABILITY = 0.08;
-    // The probability that a wildebeast will be created in any given grid position.
-    private static double wildebeast_CREATION_PROBABILITY = 0.06; 
+    // The probability that a Wildebeest will be created in any given grid position.
+    private static double Wildebeest_CREATION_PROBABILITY = 0.06; 
     // the probability that a mouse will be created 
     private static final double mouse_CREATION_PROBABILITY = 0.4;
     // the probability that berries will be created 
@@ -67,7 +67,7 @@ public class Simulator
     private String currentWeather;
     private double grassProbability;
     private double berryProbability;
-    //private static final double wildebeastDeathProbability = 0.1;
+    //private static final double WildebeestDeathProbability = 0.1;
     
     private ArrayList<Class> allAnimals;
     
@@ -103,7 +103,7 @@ public class Simulator
 
         // Create a view of the state of each location in the field.
         view = new SimulatorView(depth, width);
-        view.setColor(Wildebeast.class, lightBrown);
+        view.setColor(Wildebeest.class, lightBrown);
         view.setColor(Lion.class, darkYellow);
         view.setColor(Mouse.class, darkGrey);
         view.setColor(Berries.class, pink);
@@ -121,9 +121,8 @@ public class Simulator
         Lion lion = new Lion(true, field, location);
         Mouse mouse = new Mouse(true, field, location);
         Owl owl = new Owl(true, field, location);
-        Wildebeast wildebeast = new Wildebeast(true, field, location);
+        Wildebeest Wildebeest = new Wildebeest(true, field, location);
         Hawk hawk = new Hawk(true, field, location);
-        
         
         // Setup a valid starting point.
         reset();
@@ -154,7 +153,7 @@ public class Simulator
     /**
      * Run the simulation from its current state for a single step.
      * Iterate over the whole field updating the state of each
-     * lion and wildebeast.
+     * lion and Wildebeest.
      */
     public void simulateOneStep()
     {
@@ -201,13 +200,12 @@ public class Simulator
     }
     
     /**
-     * Randomly populate the field with liones and wildebeasts.
+     * Randomly populate the field with liones and Wildebeests.
      */
     private void populate()
     {
         Random rand = Randomizer.getRandom();
-        field.clear();       
-        
+        field.clear();         
         for(int row = 0; row < field.getDepth(); row++) {
             for(int col = 0; col < field.getWidth(); col++) {
                 if(rand.nextDouble() <= lion_CREATION_PROBABILITY) {
@@ -215,10 +213,10 @@ public class Simulator
                     Lion lion = new Lion(true, field, location);
                     animals.add(lion);
                 }
-                else if(rand.nextDouble() <= wildebeast_CREATION_PROBABILITY) {
+                else if(rand.nextDouble() <= Wildebeest_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
-                    Wildebeast wildebeast = new Wildebeast(true, field, location);
-                    animals.add(wildebeast);
+                    Wildebeest Wildebeest = new Wildebeest(true, field, location);
+                    animals.add(Wildebeest);
                 }
                 
                 else if(rand.nextDouble() <= mouse_CREATION_PROBABILITY) {
@@ -266,8 +264,7 @@ public class Simulator
     }
     
     /**
-     * 
-     * 
+     * When the timer goes past 24 hours, it rolls over to 00:00 for the new day.
      */
     private void rollover()
     {
@@ -284,8 +281,10 @@ public class Simulator
     
     
     /**
-     * Changes the animals behaviour when they have a disease
-     * 
+     * Changes the animals behaviour when they have a disease.
+     * @param animal The animal which has the disease.
+     * @param it Iterator which iterates through all the animals in the field.
+     * @param chosenDisease The disease which the specific animal has.
      */
     private void recogniseDisease(Animal animal, Iterator it, String chosenDisease)
     {
@@ -308,6 +307,12 @@ public class Simulator
         } 
     }
     
+    /**
+     * Gives disease to adjacent animals of the ones infected.
+     * @param animal The animal that is infected.
+     * @param it The Iterator which goes through all the animals in the field.
+     * @param chosenDisease The same disease which is passed on to all the animals.
+     */
     private void passOnDisease(Animal animal, Iterator it, String chosenDisease) {
         List<Location> theAdjacentLocations = field.adjacentLocations(animal.getLocation());
         for(Location location: theAdjacentLocations){
@@ -316,10 +321,12 @@ public class Simulator
                 Lifecycle animal1 = (Lifecycle) currentAnimal;
                 animal1.giveTheDisease(chosenDisease);
             }
-        
         }
     }
     
+    /**
+     * Update and increment the timer which runs through the simulation.
+     */
     private void showTimer()
     {
           if(is12hour){
@@ -339,6 +346,7 @@ public class Simulator
                 if (time == 24){
                     rollover();
                 }
+                
                 try {
                     Thread.sleep(20);
                 }
@@ -349,6 +357,9 @@ public class Simulator
         }
     }
     
+    /**
+     * Spawn the plants in random locations in the field.
+     */
     private void spawnPlants()
     {
         grassProbability = weather.changeGrassProbability(currentSeason);
@@ -376,10 +387,13 @@ public class Simulator
         }
     }
     
+    /**
+     * Makes different animals hibernate depending on the season.
+     */
     private void hibernate()
     {
         List<Animal> newAnimals = new ArrayList<>();        
-        // Let all wildebeasts act.
+        // Let all Wildebeests act.
         for(Iterator<Animal> it = animals.iterator(); it.hasNext(); ) {
             Animal animal = it.next();   
             String chosenDisease = disease.chooseDisease();
@@ -395,7 +409,7 @@ public class Simulator
                 animal.setIsSleeping();
             }
             
-            else if((animal instanceof Wildebeast) && (currentSeason.equals("Summer")))
+            else if((animal instanceof Wildebeest) && (currentSeason.equals("Summer")))
             {
                 animal.setIsSleeping();
             }
