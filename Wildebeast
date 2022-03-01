@@ -2,26 +2,26 @@ import java.util.List;
 import java.util.Random;
 import java.util.Iterator;
 /**
- * A simple model of a Wildebeast.
- * Wildebeasts age, move, breed, and die.
+ * A simple model of a Wildebeest.
+ * Wildebeests age, move, breed, and die.
  * 
  * @author David J. Barnes, Michael Kölling, Simran Debnath and Susie James
  * @version 25/02/2022 (2)
  */
-public class Wildebeast extends Animal
+public class Wildebeest extends Animal
 {
-    // Characteristics shared by all Wildebeasts (class variables).
+    // Characteristics shared by all Wildebeests (class variables).
 
-    // The age at which a Wildebeast can start to breed.
+    // The age at which a Wildebeest can start to breed.
     private static final int BREEDING_AGE = 3;
-    // The age to which a Wildebeast can live.
-    private static final int MAX_AGE = 50;
-    // The likelihood of a Wildebeast breeding.
-    private static final double BREEDING_PROBABILITY = 0.4;
+    // The age to which a Wildebeest can live.
+    private static final int MAX_AGE = 70;
+    // The likelihood of a Wildebeest breeding.
+    private static final double BREEDING_PROBABILITY = 0.6;
     // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 4;
+    private static final int MAX_LITTER_SIZE = 6;
     // the food value
-    private static final int Grass_FOOD_VALUE = 3;
+    private static final int Grass_FOOD_VALUE = 7;
     
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
@@ -30,14 +30,14 @@ public class Wildebeast extends Animal
     private int foodLevel;
 
     /**
-     * Create a new Wildebeast. A Wildebeast may be created with age
+     * Create a new Wildebeest. A Wildebeest may be created with age
      * zero (a new born) or with a random age.
      * 
-     * @param randomAge If true, the Wildebeast will have a random age.
+     * @param randomAge If true, the Wildebeest will have a random age.
      * @param field The field currently occupied.
      * @param location The location within the field.
      */
-    public Wildebeast(boolean randomAge, Field field, Location location)
+    public Wildebeest(boolean randomAge, Field field, Location location)
     {
         super(field, location);
         age = 0;
@@ -52,15 +52,15 @@ public class Wildebeast extends Animal
     }
     
     /**
-     * This is what the Wildebeast does most of the time - it runs 
+     * This is what the Wildebeest does most of the time - it runs 
      * around. Sometimes it will breed or die of old age.
-     * @param newWildebeasts A list to return newly born Wildebeasts.
+     * @param newWildebeests A list to return newly born Wildebeests.
      */
-    public void act(List<Animal> newWildebeasts, String season)
+    public void act(List<Animal> newWildebeests, String season)
     {
         incrementAge();
         if(isAlive()) {
-            giveBirth(newWildebeasts);            
+            giveBirth(newWildebeests);            
             // Try to move into a free location.
             Location newLocation = getField().freeAdjacentLocation(getLocation());
             if(newLocation != null) {
@@ -74,33 +74,13 @@ public class Wildebeast extends Animal
     }
 
     /**
-     * Increase the age.
-     * This could result in the Wildebeast's death.
-     */
-    private void incrementAge()
-    {
-        age++;
-        if(age > MAX_AGE) {
-            setDead();
-        }
-    }
-     
-    private void incrementHunger()
-    {
-        foodLevel--;
-        if(foodLevel <= 0) {
-            setDead();
-        }
-    }
-    
-    /**
-     * Check whether or not this Wildebeast is to give birth at this step.
+     * Check whether or not this Wildebeest is to give birth at this step.
      * New births will be made into free adjacent locations.
-     * @param newWildebeasts A list to return newly born Wildebeasts.
+     * @param newWildebeests A list to return newly born Wildebeests.
      */
-    private void giveBirth(List<Animal> newWildebeasts)
+    private void giveBirth(List<Animal> newWildebeests)
     {
-        // New Wildebeasts are born into adjacent locations.
+        // New Wildebeests are born into adjacent locations.
         // Get a list of adjacent free locations.
         Field field = getField();
         List<Location> free = field.getFreeAdjacentLocations(getLocation());
@@ -108,14 +88,14 @@ public class Wildebeast extends Animal
             int births = breed();
             for(int b = 0; b < births && free.size() > 0; b++) {
                 Location loc = free.remove(0);
-                Wildebeast young = new Wildebeast(false, field, loc);
-                newWildebeasts.add(young);
+                Wildebeest young = new Wildebeest(false, field, loc);
+                newWildebeests.add(young);
             }
             
         }
         
     }
-        
+
     /**
      * Generate a number representing the number of births,
      * if it can breed.
@@ -129,20 +109,20 @@ public class Wildebeast extends Animal
         }
         return births;
     }
-
+    
     /**
-     * A Wildebeast can breed if it has reached the breeding age.
-     * @return true if the Wildebeast can breed, false otherwise.
+     * A Wildebeest can breed if it has reached the breeding age.
+     * @return true if the Wildebeest can breed, false otherwise.
      */
-    private boolean canBreed()
+    protected boolean canBreed()
     {
         boolean isAnimal = false; 
         List<Location> theAdjacentLocations = field.adjacentLocations(this.location);
         for(Location location: theAdjacentLocations){
             Object animal = field.getObjectAt(location);
-            if(animal instanceof Wildebeast){
-                Wildebeast wildebeast = (Wildebeast) animal;
-                if(wildebeast.getGender().equals("female")){
+            if(animal instanceof Wildebeest){
+                Wildebeest Wildebeest = (Wildebeest) animal;
+                if(Wildebeest.getGender().equals("female")){
                     isAnimal = true;
                 }
             }
@@ -174,6 +154,5 @@ public class Wildebeast extends Animal
         }
         return null;
     }
-    
     
 }
