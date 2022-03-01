@@ -23,6 +23,10 @@ public abstract class Animal extends Lifecycle
     private boolean animalSleeping;
     
     private String hasDisease;
+    
+    protected int MAX_AGE = 50;
+    
+    protected int foodLevel = 8;
     /**
      * Creates a new animal at location in field.
      * 
@@ -119,5 +123,30 @@ public abstract class Animal extends Lifecycle
     public void changeBreedingProbability(double newValue)
     {   
         BREEDING_PROBABILITY = newValue;
+    }
+    
+    
+    /**
+     * Increase the age. This could result in the Lion's death.
+     */
+    protected void incrementAge()
+    {
+        age++;
+        System.out.println(age);
+        if(age > MAX_AGE) {
+            setDead();
+        }
+    }
+    
+    /**
+     * Make this Lion more hungry. This could result in the Lion's death.
+     */
+    protected void incrementHunger()
+    {
+        foodLevel--;
+        System.out.println(foodLevel);
+        if(foodLevel <= 0) {
+            setDead();
+        }
     }
 }
