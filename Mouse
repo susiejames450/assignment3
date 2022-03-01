@@ -15,7 +15,7 @@ public class Mouse extends Animal
     // The age at which a Mouse can start to breed.
     private static final int BREEDING_AGE = 10;
     // The age to which a Mouse can live.
-    private static final int MAX_AGE = 50;
+    private static final int MAX_AGE = 80;
     // The likelihood of a Mouse breeding.
     private static final double BREEDING_PROBABILITY = 0.8;
     // The maximum number of births.
@@ -86,28 +86,6 @@ public class Mouse extends Animal
     }
 
     /**
-     * Increase the age. This could result in the Mouse's death.
-     */
-    private void incrementAge()
-    {
-        age++;
-        if(age > MAX_AGE) {
-            setDead();
-        }
-    }
-    
-    /**
-     * Make this Mouse more hungry. This could result in the Mouse's death.
-     */
-    private void incrementHunger()
-    {
-        foodLevel--;
-        if(foodLevel <= 0) {
-            setDead();
-        }
-    }
-    
-    /**
      * Look for Berries adjacent to the current location.
      * @return Where food was found, or null if it wasn't.
      */
@@ -157,8 +135,8 @@ public class Mouse extends Animal
             
         }
     }
-        
-    /**
+    
+     /**
      * Generate a number representing the number of births,
      * if it can breed.
      * @return The number of births (may be zero).
@@ -176,7 +154,7 @@ public class Mouse extends Animal
      * A Mouse can breed if it has reached the breeding age.
      * @return true if the animal can breed.
      */
-    private boolean canBreed()
+    protected boolean canBreed()
     {
         boolean isAnimal = false;
         List<Location> theAdjacentLocations = field.adjacentLocations(this.location);
