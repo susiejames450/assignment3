@@ -1,17 +1,14 @@
 /**
- * Write a description of class Grass here.
+ * Class representing the Grass in the simulator.
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author (Simran Debnath, Susetta James)
+ * @version (24/02/2022)
  */
 public class Grass extends Plant
 {
-    /**
-     * Constructor for objects of class Grass
-     */
     public Grass(Field field, Location location)
     {
-        super(field, location);// initialise instance variables
+        super(field, location);
 
     }
 }
