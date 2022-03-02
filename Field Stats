@@ -141,7 +141,7 @@ public class FieldStats
     }
     
     /**
-     * 
+     * Reverses day to night and vice versa.
      */
     public void reverseDay()
     {
@@ -149,7 +149,8 @@ public class FieldStats
     }
     
     /**
-     * 
+     * Returns which state of the day the simulation is in.
+     * @return Returns day or night.
      */
     public String getTimeOfDay()
     {
@@ -163,7 +164,9 @@ public class FieldStats
     }
     
     /**
-    * 
+    * Goes through the seasons of the year.
+    * After winter, the season goes back to Spring and the 
+    * year starts again.
     */
     public void changeSeason()
     {
@@ -175,7 +178,8 @@ public class FieldStats
     }
     
     /**
-     * 
+     * Gets the season the simulation is currently in.
+     * @return Returns the name of the current season.
      */
     public String getSeason()
     {
