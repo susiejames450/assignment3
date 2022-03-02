@@ -4,14 +4,14 @@ import java.util.Random;
 
 /**
  * A simple model of a Mouse.
- * Mousees age, move, eat Wildebeasts, and die.
+ * Mice age, move, eat Berries, and die.
  * 
  * @author David J. Barnes and Michael Kölling
  * @version 2016.02.29 (2)
  */
 public class Mouse extends Animal
 {
-    // Characteristics shared by all Mousees (class variables).
+    // Characteristics shared by all Mice (class variables).
     
     // The age at which a Mouse can start to breed.
     private static final int BREEDING_AGE = 5;
@@ -27,12 +27,10 @@ public class Mouse extends Animal
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
     
-    // Individual characteristics (instance fields).
     // The Mouse's age.
     private int age;
     // The Mouse's food level, which is increased by eating Berriess.
     private int foodLevel;
-
     /**
      * Create a Mouse. A Mouse can be created as a new born (age zero
      * and not hungry) or with a random age and food level.
@@ -59,14 +57,14 @@ public class Mouse extends Animal
      * Berriess. In the process, it might breed, die of hunger,
      * or die of old age.
      * @param field The field currently occupied.
-     * @param newMousees A list to return newly born Mousees.
+     * @param newMice A list to return newly born Mice.
      */
-    public void act(List<Animal> newMousees, String season)
+    public void act(List<Animal> newMice, String season)
     {
         incrementAge();
         incrementHunger();
         if(isAlive()) {
-            giveBirth(newMousees);            
+            giveBirth(newMice);            
             // Move towards a source of food if found.
             Location newLocation = findFood();
             if(!this.alive){
@@ -100,7 +98,7 @@ public class Mouse extends Animal
     }
     
     /**
-     * Make this Mouse more hungry. This could result in the Mouse's death.
+     * Make the Mouse more hungry. This could result in the Mouse's death.
      */
     private void incrementHunger()
     {
@@ -143,11 +141,11 @@ public class Mouse extends Animal
     /**
      * Check whether or not this Mouse is to give birth at this step.
      * New births will be made into free adjacent locations.
-     * @param newMousees A list to return newly born Mousees.
+     * @param newMice A list to return newly born Mice.
      */
-    private void giveBirth(List<Animal> newMousees)
+    private void giveBirth(List<Animal> newMice)
     {
-        // New Mousees are born into adjacent locations.
+        // New Mice are born into adjacent locations.
         // Get a list of adjacent free locations.
         Field field = getField();
         List<Location> free = field.getFreeAdjacentLocations(getLocation());
@@ -156,11 +154,9 @@ public class Mouse extends Animal
             for(int b = 0; b < births && free.size() > 0; b++) {
                 Location loc = free.remove(0);
                 Mouse young = new Mouse(false, field, loc);
-                newMousees.add(young);
+                newMice.add(young);
             }
-            
-        }
-        
+        } 
     }
         
     /**
@@ -183,8 +179,6 @@ public class Mouse extends Animal
     private boolean canBreed()
     {
         boolean isAnimal = false;
-        
-        
         List<Location> theAdjacentLocations = field.adjacentLocations(this.location);
         for(Location location: theAdjacentLocations){
             Object animal = field.getObjectAt(location);
@@ -194,7 +188,6 @@ public class Mouse extends Animal
                     isAnimal = true;
                 }
             }
-            
         }
         return age >= BREEDING_AGE && isAnimal;
     }
