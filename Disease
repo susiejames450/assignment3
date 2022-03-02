@@ -1,6 +1,6 @@
 import java.util.Random;
 /**
- * Write a description of class Disease here.
+ *A class that simulates disease in the simulation.
  *
  * @author (Simran Debnath and Susetta James)
  * @version (18/02/2022)
@@ -20,6 +20,7 @@ public class Disease
 
     /**
      * Randomly picks which disease the animal will have.
+     * @return Returns the chosen disease.
      */
     public String chooseDisease()
     {
