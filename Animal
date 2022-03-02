@@ -1,10 +1,9 @@
 import java.util.List;
 import java.util.Random;
-
 /**
  * A class representing shared characteristics of animals.
  * 
- * @author David J. Barnes and Michael Kölling
+ * @author David J. Barnes, Michael Kölling, Simran Debnath and Susetta James
  * @version 2016.02.29 (2)
  */
 public abstract class Animal extends Lifecycle
@@ -25,8 +24,11 @@ public abstract class Animal extends Lifecycle
     
     private String hasDisease;
     
+    protected int MAX_AGE = 50;
+    
+    protected int foodLevel = 8;
     /**
-     * Create a new animal at location in field.
+     * Creates a new animal at location in field.
      * 
      * @param field The field currently occupied.
      * @param location The location within the field.
@@ -42,16 +44,17 @@ public abstract class Animal extends Lifecycle
         hasDisease = null;
     }
     
-      /**
+    /**
      * Make this animal act - that is: make it do
      * whatever it wants/needs to do.
      * @param newAnimals A list to receive newly born animals.
-     *  */
-    
+     * @param season Stores the season which the animals are in.
+     */
     abstract public void act(List<Animal> newAnimals, String season);
     
     /**
-     * 
+     * Set the animals' gender with a 0.5 chance
+     * of being male or female.
      */
     protected void setGender()
     {
@@ -64,39 +67,61 @@ public abstract class Animal extends Lifecycle
     }
     
     /**
-     * 
+     * Returns the gender of the animal.
      */
     protected String getGender()
     {
         return gender;
     }
     
+    /**
+     * Returns whether or not the animal is sleeping.
+     * @return true if animal is sleeping.
+     */
     public boolean isSleeping()
     {
         return animalSleeping;
     }
     
+    /**
+     * Changes the state of the animal sleeping.
+     */
     public void changeSleeping()
     {
         animalSleeping = !animalSleeping;
     }
     
+    /**
+     * Sets whether or not animal is sleeping.
+     */
     public void setIsSleeping()
     {   
         animalSleeping = true;
     }
     
+    /**
+     * Allocates a disease to an animal.
+     * @param disease The name of the disease which the animal has.
+     */
     public void giveDisease(String disease)
     {
         hasDisease = disease;
     }
     
+    /**
+     * Returns what type of disease the animal has.
+     */
     public String returnDisease()
     {
         return hasDisease;
     }
     
-    public void changeBreedingProbability(double newValue){
+    /**
+     * Changes breeding probability of animals.
+     * @param newValue Assigns a new value of the probability.
+     */
+    public void changeBreedingProbability(double newValue)
+    {   
         BREEDING_PROBABILITY = newValue;
     }
 }
