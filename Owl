@@ -4,14 +4,14 @@ import java.util.Random;
 
 /**
  * A simple model of a Owl.
- * Owles age, move, eat Mouses, and die.
+ * Owls age, move, eat Mice, breed and die.
  * 
  * @author David J. Barnes and Michael Kölling
  * @version 2016.02.29 (2)
  */
 public class Owl extends Animal
 {
-    // Characteristics shared by all Owles (class variables).
+    // Characteristics shared by all Owls (class variables).
     
     // The age at which a Owl can start to breed.
     private static final int BREEDING_AGE = 15;
@@ -27,12 +27,10 @@ public class Owl extends Animal
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
     
-    // Individual characteristics (instance fields).
     // The Owl's age.
     private int age;
     // The Owl's food level, which is increased by eating Mouses.
     private int foodLevel;
-
     /**
      * Create a Owl. A Owl can be created as a new born (age zero
      * and not hungry) or with a random age and food level.
@@ -59,14 +57,14 @@ public class Owl extends Animal
      * Mouses. In the process, it might breed, die of hunger,
      * or die of old age.
      * @param field The field currently occupied.
-     * @param newOwles A list to return newly born Owles.
+     * @param newOwls A list to return newly born Owls.
      */
-    public void act(List<Animal> newOwles, String season)
+    public void act(List<Animal> newOwls, String season)
     {
         incrementAge();
         incrementHunger();
         if(isAlive()) {
-            giveBirth(newOwles);            
+            giveBirth(newOwls);            
             // Move towards a source of food if found.
             Location newLocation = findFood();
             if(newLocation == null) { 
@@ -134,11 +132,11 @@ public class Owl extends Animal
     /**
      * Check whether or not this Owl is to give birth at this step.
      * New births will be made into free adjacent locations.
-     * @param newOwles A list to return newly born Owles.
+     * @param newOwls A list to return newly born Owls.
      */
-    private void giveBirth(List<Animal> newOwles)
+    private void giveBirth(List<Animal> newOwls)
     {
-        // New Owles are born into adjacent locations.
+        // New Owls are born into adjacent locations.
         // Get a list of adjacent free locations.
         Field field = getField();
         List<Location> free = field.getFreeAdjacentLocations(getLocation());
@@ -146,7 +144,7 @@ public class Owl extends Animal
         for(int b = 0; b < births && free.size() > 0; b++) {
             Location loc = free.remove(0);
             Owl young = new Owl(false, field, loc);
-            newOwles.add(young);
+            newOwls.add(young);
         }
     }
         
@@ -170,8 +168,6 @@ public class Owl extends Animal
     private boolean canBreed()
     {
         boolean isAnimal = false;
-        
-        
         List<Location> theAdjacentLocations = field.adjacentLocations(this.location);
         for(Location location: theAdjacentLocations){
             Object animal = field.getObjectAt(location);
@@ -180,8 +176,7 @@ public class Owl extends Animal
                 if(owl.getGender().equals("female")){
                     isAnimal = true;
                 }
-            }
-            
+            } 
         }
         return age >= BREEDING_AGE && isAnimal;
     }
@@ -189,5 +184,4 @@ public class Owl extends Animal
     public void changeBreedingProbability(double newProbability){
         BREEDING_PROBABILITY = newProbability;
     }
-    
 }
