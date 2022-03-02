@@ -1,9 +1,8 @@
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Iterator;
-
 /**
- * A model that simulates the changing weather types each season
+ * A class that simulates the changing weather types each season
  *
  * @author Simmi Debnath and Susie James
  * @version 19.02.2022
@@ -14,14 +13,10 @@ public class Weather {
     // the probability that berries will grow at any given time
     private static double berries_GROWTH_PROBABILITY;
     
-    
     private ArrayList <String> weatherTypes;
     private String currentWeather;
     private int currentWeatherLength;
     private int currentStep;
-    
-    
-    
      /**
      * Sets the grass and berry probabilities to be the same for the start of the simulation
      */
@@ -42,8 +37,7 @@ public class Weather {
     }
     
     /**
-     * Return the growth probabilty of the grass
-     * 
+     * Return the growth probabilty of the grass.
      * @return the probability of grass growing
      */
     public double grassProbability()
@@ -73,8 +67,7 @@ public class Weather {
             
         else if(season.equals("Winter")){
             grass_GROWTH_PROBABILITY = 0.0;
-        }
-            
+        }  
         return grass_GROWTH_PROBABILITY;
     }
     
@@ -99,6 +92,10 @@ public class Weather {
         return berries_GROWTH_PROBABILITY;
     }
     
+    /**
+     * Chooses a random weather for a season from the ArrayList.
+     * @return Returns the current weather which is randomly chosen.
+     */
     public String chooseRandomWeather(){
         Random rand = Randomizer.getRandom();
         
@@ -109,34 +106,47 @@ public class Weather {
         return currentWeather;
     }
     
+    /**
+     * Assigns how many steps the weather lasts for.
+     * @return Returns the weather which is chosen.
+     */
     public String getWeatherType(){
         currentStep++;
         if(currentStep == currentWeatherLength){
             currentWeather = chooseRandomWeather();
             currentStep = 0;
         }
-        
         return currentWeather;
     }
     
-    public int getWeatherLenght(){
+    /**
+     * Gets the length of how long the weather lasts for.
+     * @return Returns the weather length.
+     */
+    public int getWeatherLength(){
         return currentWeatherLength;
     }
     
+    /**
+     * Gets the current weather.
+     * @return Returns the name of the current weather.
+     */
     public String getWeather()
     {
         return currentWeather;
     }
     
+    /**
+     * Gives different animal's consequences depending on the 
+     * type of weather which is occuring.
+     */
     public void weatherBehaviour(String weather, Animal animal, Iterator it){
         Random rand = Randomizer.getRandom();
         if(weather.equals("Snow") && rand.nextDouble() <= 0.05){
             animal.setDead();
-            //it.remove();
         }
         else if(weather.equals("Rain") && rand.nextDouble() <= 0.02){
             animal.setDead();
-            //it.remove();
         }
         else if(weather.equals("Wind")){
             if(animal instanceof Owl){
