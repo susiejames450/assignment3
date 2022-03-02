@@ -228,11 +228,11 @@ public class SimulatorView extends JFrame
     }
     
     /**
-     * 
+     * Opens a new frame containing a key of animals
+     * when the key button is clicked.
      */
     public void keyButtonClicked()
     {
-        System.out.println("Key button pressed");
         keyFrame = new JFrame("Key");
         keyPanel = new JPanel( new GridLayout(8, 1));
         
@@ -241,7 +241,7 @@ public class SimulatorView extends JFrame
         keyFrame.add(keyPanel);
         
         JLabel titleLabel = new JLabel("ANIMAL COLOUR KEY: ");
-        Font font = new Font("Courier", Font.BOLD,12);
+        Font font = new Font("Lora", Font.BOLD,12);
         titleLabel.setFont(font);
         
         keyPanel.add(titleLabel); 
@@ -250,7 +250,7 @@ public class SimulatorView extends JFrame
         keyPanel.add(new JLabel("Mice = grey"));
         keyPanel.add(new JLabel("Owls = blue"));
         keyPanel.add(new JLabel("Hawks = purple"));
-        keyPanel.add(new JLabel("Wildebeasts = brown"));
+        keyPanel.add(new JLabel("Wildebeest = brown"));
         keyPanel.add(new JLabel("Lions = yellow"));
          
         keyFrame.setVisible(true); 
