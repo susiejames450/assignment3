@@ -4,7 +4,7 @@ import java.util.Random;
 
 /**
  * A simple model of a Lion.
- * Liones age, move, eat Wildebeests, and die.
+ * Liones age, move, eat Wildebeasts, and die.
  * 
  * @author David J. Barnes and Michael Kölling
  * @version 2016.02.29 (2)
@@ -14,24 +14,26 @@ public class Lion extends Animal
     // Characteristics shared by all Liones (class variables).
     
     // The age at which a Lion can start to breed.
-    private static final int BREEDING_AGE = 6;
+    private static final int BREEDING_AGE = 15;
     // The age to which a Lion can live.
-    private static final int MAX_AGE = 100;
+    private static final int MAX_AGE = 70;
     // The likelihood of a Lion breeding.
     private static final double BREEDING_PROBABILITY = 0.9;
     // The maximum number of births.
-    private static final int MAX_LITTER_SIZE = 15;
-    // The food value of a single Wildebeest. In effect, this is the
+    private static final int MAX_LITTER_SIZE = 10;
+    // The food value of a single Wildebeast. In effect, this is the
     // number of steps a Lion can go before it has to eat again.
-    private static final int Wildebeest_FOOD_VALUE = 9;
+    private static final int Wildebeast_FOOD_VALUE = 20;
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
     
     // Individual characteristics (instance fields).
     // The Lion's age.
     private int age;
-    // The Lion's food level, which is increased by eating Wildebeests.
+    // The Lion's food level, which is increased by eating Wildebeasts.
     private int foodLevel;
+    // the class type
+    //private final Class type;
 
     /**
      * Create a Lion. A Lion can be created as a new born (age zero
@@ -46,20 +48,20 @@ public class Lion extends Animal
         super(field, location);
         if(randomAge) {
             age = rand.nextInt(MAX_AGE);
-            foodLevel = rand.nextInt(Wildebeest_FOOD_VALUE);
+            foodLevel = rand.nextInt(Wildebeast_FOOD_VALUE);
         }
         else {
             age = 0;
-            foodLevel = Wildebeest_FOOD_VALUE;
+            foodLevel = Wildebeast_FOOD_VALUE;
         }
     }
     
     /**
      * This is what the Lion does most of the time: it hunts for
-     * Wildebeests. In the process, it might breed, die of hunger,
+     * Wildebeasts. In the process, it might breed, die of hunger,
      * or die of old age.
      * @param field The field currently occupied.
-     * @param newLions A list to return newly born Liones.
+     * @param newLiones A list to return newly born Liones.
      */
     public void act(List<Animal> newLions, String season)
     {
@@ -85,8 +87,30 @@ public class Lion extends Animal
     }
 
     /**
-     * Look for Wildebeests adjacent to the current location.
-     * Only the first live Wildebeest is eaten.
+     * Increase the age. This could result in the Lion's death.
+     */
+    private void incrementAge()
+    {
+        age++;
+        if(age > MAX_AGE) {
+            setDead();
+        }
+    }
+    
+    /**
+     * Make this Lion more hungry. This could result in the Lion's death.
+     */
+    private void incrementHunger()
+    {
+        foodLevel--;
+        if(foodLevel <= 0) {
+            setDead();
+        }
+    }
+    
+    /**
+     * Look for Wildebeasts adjacent to the current location.
+     * Only the first live Wildebeast is eaten.
      * @return Where food was found, or null if it wasn't.
      */
     private Location findFood()
@@ -98,10 +122,10 @@ public class Lion extends Animal
             Location where = it.next();
             Object animal = field.getObjectAt(where);
             if(animal instanceof Wildebeest) {
-                Wildebeest Wildebeest = (Wildebeest) animal;
-                if(Wildebeest.isAlive()) { 
-                    Wildebeest.setDead();
-                    foodLevel = Wildebeest_FOOD_VALUE;
+                Wildebeest wildebeest = (Wildebeest) animal;
+                if(wildebeest.isAlive()) { 
+                    wildebeest.setDead();
+                    foodLevel = Wildebeast_FOOD_VALUE;
                     return where;
                 }
             }
@@ -112,7 +136,7 @@ public class Lion extends Animal
     /**
      * Check whether or not this Lion is to give birth at this step.
      * New births will be made into free adjacent locations.
-     * @param newLions A list to return newly born Liones.
+     * @param newLiones A list to return newly born Liones.
      */
     private void giveBirth(List<Animal> newLions)
     {
@@ -131,7 +155,7 @@ public class Lion extends Animal
         }
  
     }
-    
+        
     /**
      * Generate a number representing the number of births,
      * if it can breed.
@@ -145,12 +169,13 @@ public class Lion extends Animal
         }
         return births;
     }
-    
+
     /**
      * A Lion can breed if it has reached the breeding age.
      * And if there is a female lion in an adjacent square
+     * @return a boolean that states whether or not the lion can breed depending on it's breeding age and whether there is a mate nearby.
      */
-    protected boolean canBreed()
+    private boolean canBreed()
     {
         boolean isAnimal = false;
         
@@ -167,4 +192,5 @@ public class Lion extends Animal
         }
         return age >= BREEDING_AGE && isAnimal;
     }
+    
 }
