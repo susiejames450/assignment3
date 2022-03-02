@@ -1,17 +1,16 @@
 import java.util.List;
 import java.util.Iterator;
 import java.util.Random;
-
 /**
  * A simple model of a Hawk.
- * Hawkes age, move, eat Mouses, and die.
+ * Hawks age, move, eat Mice, breed and die.
  * 
  * @author David J. Barnes and Michael Kölling
  * @version 2016.02.29 (2)
  */
 public class Hawk extends Animal
 {
-    // Characteristics shared by all Hawkes (class variables).
+    // Characteristics shared by all Hawks (class variables).
     
     // The age at which a Hawk can start to breed.
     private static final int BREEDING_AGE = 15;
@@ -27,7 +26,6 @@ public class Hawk extends Animal
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
     
-    // Individual characteristics (instance fields).
     // The Hawk's age.
     private int age;
     // The Hawk's food level, which is increased by eating Mouses.
@@ -59,7 +57,7 @@ public class Hawk extends Animal
      * Mouses. In the process, it might breed, die of hunger,
      * or die of old age.
      * @param field The field currently occupied.
-     * @param newHawkes A list to return newly born Hawkes.
+     * @param newHawks A list to return newly born Hawks.
      */
     public void act(List<Animal> newHawks, String season)
     {
@@ -134,11 +132,11 @@ public class Hawk extends Animal
     /**
      * Check whether or not this Hawk is to give birth at this step.
      * New births will be made into free adjacent locations.
-     * @param newHawkes A list to return newly born Hawkes.
+     * @param newHawks A list to return newly born Hawks.
      */
     private void giveBirth(List<Animal> newHawks)
     {
-        // New Hawkes are born into adjacent locations.
+        // New Hawks are born into adjacent locations.
         // Get a list of adjacent free locations.
         Field field = getField();
         List<Location> free = field.getFreeAdjacentLocations(getLocation());
@@ -180,7 +178,6 @@ public class Hawk extends Animal
                     isAnimal = true;
                 }
             }
-            
         }
         return age >= BREEDING_AGE && isAnimal;
     }
