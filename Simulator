@@ -15,21 +15,21 @@ public class Simulator
 {
     // Constants representing configuration information for the simulation.
     // The default width for the grid.
-    private static final int DEFAULT_WIDTH = 300;
+    private static final int DEFAULT_WIDTH = 150;
     // The default depth of the grid.
-    private static final int DEFAULT_DEPTH = 200;
+    private static final int DEFAULT_DEPTH = 80;
     // The probability that a lion will be created in any given grid position.
-    private static final double lion_CREATION_PROBABILITY = 0.08;
+    private static final double lion_CREATION_PROBABILITY = 0.06;
     // The probability that a Wildebeest will be created in any given grid position.
-    private static double Wildebeest_CREATION_PROBABILITY = 0.06; 
+    private static double Wildebeest_CREATION_PROBABILITY = 0.04; 
     // the probability that a mouse will be created 
-    private static final double mouse_CREATION_PROBABILITY = 0.4;
+    private static final double mouse_CREATION_PROBABILITY = 0.5;
     // the probability that berries will be created 
-    private static final double berry_CREATION_PROBABILITY = 0.09;
+    private static final double berry_CREATION_PROBABILITY = 0.1;
     //the probability that an owl will be created
-    private static final double owl_CREATION_PROBABILITY = 0.06;
+    private static final double owl_CREATION_PROBABILITY = 0.08;
     // the probability that a hawk will be created
-    private static final double hawk_CREATION_PROBABILITY = 0.06;
+    private static final double hawk_CREATION_PROBABILITY = 0.08;
     
     // List of animals in the field.
     private List<Animal> animals;
@@ -399,17 +399,17 @@ public class Simulator
             String chosenDisease = disease.chooseDisease();
             disease.diseaseProbabilities(animal, chosenDisease);
             weather.weatherBehaviour(currentWeather, animal, it);
-            if((animal instanceof Owl) && (currentSeason.equals("Winter")))
+            if((animal instanceof Owl || animal instanceof Hawk) && (currentSeason.equals("Winter")))
             {
                 animal.setIsSleeping();
             }
             
-            else if((animal instanceof Hawk) && (currentSeason.equals("Autumn")))
+            else if((animal instanceof Hawk || animal instanceof Owl) && (currentSeason.equals("Autumn")))
             {
                 animal.setIsSleeping();
             }
             
-            else if((animal instanceof Wildebeest) && (currentSeason.equals("Summer")))
+            else if((animal instanceof Wildebeest || animal instanceof Mouse) && (currentSeason.equals("Summer")))
             {
                 animal.setIsSleeping();
             }
