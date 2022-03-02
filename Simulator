@@ -3,7 +3,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.awt.Color;
-
 /**
  * A simple predator-prey simulator, based on a rectangular field
  * containing Wildebeests and liones.
@@ -48,18 +47,12 @@ public class Simulator
     
     //Colours for animals
     private Color lightPurple= new Color(219,171,255);
-    private Color darkPurple = new Color(75,0,130);
     private Color lightBlue = new Color(51,238,255);
-    private Color darkBlue = new Color(0,0,204);
     private Color green = new Color (24,141,48);
-    private Color lightYellow = new Color(255,255,153);
     private Color darkYellow = new Color (255,255,0);
-    private Color lightGrey = new Color (224,224,224);
     private Color darkGrey = new Color (96,96,96);
     private Color lightBrown = new Color(205,133,63);
-    private Color darkBrown = new Color(139,69,19);
     private Color pink = new Color(204,0,102);
-    private Color white = new Color(255, 255, 255);
     
     private int time;
     private boolean is12hour;
@@ -69,8 +62,7 @@ public class Simulator
     private double berryProbability;
     //private static final double WildebeestDeathProbability = 0.1;
     
-    private ArrayList<Class> allAnimals;
-    
+    private ArrayList<Class> allAnimals;  
     /**
      * Construct a simulation field with default size.
      */
