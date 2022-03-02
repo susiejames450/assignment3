@@ -1,13 +1,12 @@
 import java.util.Random;
 /**
- * Write a description of class Berries here.
+ *Class representing Berries in the simulator.
  *
  * @author (your name)
  * @version (a version number or a date)
  */
 public class Berries extends Plant
 {
-    // instance variables - replace the example below with your own
     private boolean poisonous;
     private static final Random rand = Randomizer.getRandom();
     private static final double poisionous_probability = 0.02;
@@ -16,7 +15,6 @@ public class Berries extends Plant
      */
     public Berries(Field field, Location location)
     {
-        // initialise instance variables
         super(field, location);
         poisonous = false;
         if(rand.nextDouble() <= poisionous_probability){
@@ -34,6 +32,4 @@ public class Berries extends Plant
     {
         return poisonous;
     }
-    
-    
 }
