@@ -12,19 +12,22 @@ public class Weather {
     // the probability that grass will grow at any time
     private static double grass_GROWTH_PROBABILITY;
     // the probability that berries will grow at any given time
-    private static double berries_GROWTH_PROBABILITY; 
+    private static double berries_GROWTH_PROBABILITY;
+    
     
     private ArrayList <String> weatherTypes;
     private String currentWeather;
     private int currentWeatherLength;
     private int currentStep;
     
+    
+    
      /**
      * Sets the grass and berry probabilities to be the same for the start of the simulation
      */
     public Weather()
     {
-        grass_GROWTH_PROBABILITY = 0.05;
+        grass_GROWTH_PROBABILITY = 0.01;
         berries_GROWTH_PROBABILITY = 0.01;
         
         weatherTypes = new ArrayList<>();
@@ -57,7 +60,7 @@ public class Weather {
     public double changeGrassProbability(String season)
     {
         if(season.equals("Spring")){
-            grass_GROWTH_PROBABILITY = 0.03;
+            grass_GROWTH_PROBABILITY = 0.02;
         }
             
         else if(season.equals("Summer")){
@@ -65,7 +68,7 @@ public class Weather {
         }
             
         else if(season.equals("Autumn")){
-            grass_GROWTH_PROBABILITY = 0.02;
+            grass_GROWTH_PROBABILITY = 0.01;
         }
             
         else if(season.equals("Winter")){
@@ -88,18 +91,14 @@ public class Weather {
             berries_GROWTH_PROBABILITY = 0.0;
         }
         else if(currentWeather.equals("Rain")){
-            berries_GROWTH_PROBABILITY = 0.04;
+            berries_GROWTH_PROBABILITY = 0.02;
         }
         else{
-            berries_GROWTH_PROBABILITY = 0.02;
+            berries_GROWTH_PROBABILITY = 0.01;
         }
         return berries_GROWTH_PROBABILITY;
     }
     
-    /**
-     * Randomly select a weather type.
-     * @return Returns the randomly chosen weather.
-     */
     public String chooseRandomWeather(){
         Random rand = Randomizer.getRandom();
         
@@ -116,6 +115,7 @@ public class Weather {
             currentWeather = chooseRandomWeather();
             currentStep = 0;
         }
+        
         return currentWeather;
     }
     
@@ -130,34 +130,32 @@ public class Weather {
     
     public void weatherBehaviour(String weather, Animal animal, Iterator it){
         Random rand = Randomizer.getRandom();
-        if(weather.equals("Snow") && rand.nextDouble() <= 0.05)
-        {
+        if(weather.equals("Snow") && rand.nextDouble() <= 0.05){
             animal.setDead();
+            //it.remove();
         }
-        else if(weather.equals("Rain") && rand.nextDouble() <= 0.02)
-        {
+        else if(weather.equals("Rain") && rand.nextDouble() <= 0.02){
             animal.setDead();
+            //it.remove();
         }
         else if(weather.equals("Wind")){
             if(animal instanceof Owl){
                 Owl owl = (Owl) animal;
-                owl.changeBreedingProbability(0.6);
+                owl.changeBreedingProbability(0.8);
             }
-            
             if(animal instanceof Mouse){
                 Mouse mouse = (Mouse) animal;
-                mouse.changeFoodValue(20);
+                mouse.changeFoodValue(200);
             }
         }
         else if(weather.equals("Sun")){
             if(animal instanceof Owl){
                 Owl owl = (Owl) animal;
-                owl.changeBreedingProbability(0.5);
+                owl.changeBreedingProbability(0.9);
             }
-            
             if(animal instanceof Mouse){
                 Mouse mouse = (Mouse) animal;
-                mouse.changeFoodValue(50);
+                mouse.changeFoodValue(300);
             }
         }
     }
